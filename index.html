@@ -32,6 +32,57 @@
   .nav-item.active{color:var(--gold)}
   .nav-item .nav-icon{font-size:18px;line-height:1}
 
+
+  /* RULES TABS */
+  .rules-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg)}
+  .rtab{flex:1;padding:11px 0 10px;text-align:center;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;text-transform:uppercase}
+  .rtab.active{color:var(--gold);border-bottom-color:var(--gold)}
+  .rules-panel{display:none}.rules-panel.active{display:block}
+
+  /* UNIT OPTIONS PANEL */
+  .opts-toggle{margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+  .opts-btn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.08em;color:var(--muted);cursor:pointer;padding:4px 0;display:flex;align-items:center;gap:4px;transition:color .2s}
+  .opts-btn:active{color:var(--gold)}
+  .opts-panel{display:none;padding-top:8px}
+  .opts-panel.open{display:block}
+  .opts-grid{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+  .opt-pill{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:3px 9px;font-size:11px;color:var(--text);display:inline-flex;gap:5px;align-items:center}
+  .opt-gp{color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:10px}
+  .prog-note{background:rgba(201,162,39,.06);border-left:2px solid var(--gold-dim);padding:6px 10px;font-size:11px;font-style:italic;color:var(--muted);border-radius:0 4px 4px 0;line-height:1.5}
+
+  /* WARGEAR ARMOURY */
+  .wgcat-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:var(--gold);padding:10px 18px 6px;border-bottom:1px solid var(--border);text-transform:uppercase}
+  .wgitem{display:flex;align-items:flex-start;padding:9px 18px;border-bottom:1px solid rgba(42,37,53,.4);gap:10px}
+  .wgitem-left{flex:1}
+  .wgitem-name{font-size:13px;font-weight:600;color:var(--text)}
+  .wgitem-desc{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4}
+  .wgitem-gp{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--gold);white-space:nowrap;align-self:center}
+  .wgitem-tag{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:9px;padding:1px 6px;color:var(--muted);margin-left:4px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em}
+
+  /* PROGRESSION */
+  .prog-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:10px 18px;overflow:hidden}
+  .prog-card-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;color:var(--gold);padding:10px 14px 8px;border-bottom:1px solid var(--border);text-transform:uppercase}
+  .prog-row{display:flex;padding:7px 14px;border-bottom:1px solid rgba(42,37,53,.4);gap:10px;align-items:flex-start}
+  .prog-row:last-child{border-bottom:none}
+  .prog-roll{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold);min-width:36px;flex-shrink:0;margin-top:1px}
+  .prog-result{font-size:12px;color:var(--text);line-height:1.4}
+  .prog-result span{color:var(--muted);font-style:italic}
+  .xp-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .xp-item{padding:7px 14px;border-bottom:1px solid rgba(42,37,53,.4);border-right:1px solid rgba(42,37,53,.4);display:flex;justify-content:space-between;align-items:center;font-size:12px}
+  .xp-item:nth-child(even){border-right:none}
+  .xp-pts{font-family:'Share Tech Mono',monospace;color:var(--gold);font-size:12px}
+
+  /* PHASE CARDS */
+  .phase-card{display:flex;gap:12px;padding:10px 18px;border-bottom:1px solid rgba(42,37,53,.4);align-items:flex-start}
+  .phase-num{font-family:'Cinzel',serif;font-size:18px;font-weight:900;color:var(--ember);flex-shrink:0;width:28px;text-align:center;line-height:1}
+  .phase-info{}
+  .phase-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.1em;color:var(--gold);margin-bottom:3px;text-transform:uppercase}
+  .phase-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+  /* LIMITS QUICK REF */
+  .limits-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:0 18px 12px;font-size:11px;color:var(--muted);line-height:1.8}
+  .limits-box b{color:var(--text)}
+
   /* HOME */
   .home-hero{flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px 30px;text-align:center;position:relative;overflow:hidden}
   .home-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(201,162,39,.08) 0%,transparent 70%);pointer-events:none}
@@ -347,44 +398,182 @@
 
   <!-- RULES -->
   <div class="screen" id="screen-rules">
-    <div class="topbar"><div class="topbar-back" onclick="gotoScreen('home')">←</div><div class="topbar-title">Quick Reference</div></div>
-    <div class="scroll-area">
-      <div class="section-header">Game Modes</div>
-      <div style="margin:0 18px 16px">
-        <div class="game-mode-card"><div class="gmc-title">⚔️ Match Play</div><div class="gmc-desc">Two or more players build warbands and face off in the ruins of Halgrad. Games last up to 10 turns.</div></div>
-        <div class="game-mode-card"><div class="gmc-title">🧟 Single Player</div><div class="gmc-desc">Pit your warband against the city's Dark Denizens in dungeon crawler-style scenarios. Play alone, any time.</div></div>
-        <div class="game-mode-card"><div class="gmc-title">📜 Quest Play</div><div class="gmc-desc">Campaign mode. Face dangerous quests that shape the city. Earn XP, take injuries, find loot.</div></div>
-      </div>
-      <div class="section-header">Stat Reference</div>
-      <div style="margin:0 18px 16px">
+    <div class="topbar"><div class="topbar-back" onclick="gotoScreen('home')">←</div><div class="topbar-title">Reference</div></div>
+    <div class="rules-tabs">
+      <div class="rtab active" data-tab="quick" onclick="showRulesTab('quick')">Quick Rules</div>
+      <div class="rtab" data-tab="armoury" onclick="showRulesTab('armoury')">Armoury</div>
+      <div class="rtab" data-tab="progress" onclick="showRulesTab('progress')">Progression</div>
+    </div>
+
+    <!-- QUICK RULES PANEL -->
+    <div class="rules-panel active" id="rpanel-quick" style="flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px">
+      <div class="section-header" style="margin-top:6px">Turn Order</div>
+      <div class="phase-card"><div class="phase-num">0</div><div class="phase-info"><div class="phase-title">Deployment</div><div class="phase-desc">Place Denizens first. Players roll off, then alternate deploying units starting with the loser of the roll.</div></div></div>
+      <div class="phase-card"><div class="phase-num">1</div><div class="phase-info"><div class="phase-title">Initiative Phase</div><div class="phase-desc">Both players roll D10. Winner chooses who goes first for the entire turn. Ties re-roll.</div></div></div>
+      <div class="phase-card"><div class="phase-num">2</div><div class="phase-info"><div class="phase-title">Movement Phase</div><div class="phase-desc">Active player moves all units up to their Sp value. Charging adds +2". Then next player moves. Denizens move last.<br><br><b>Charging:</b> Must end in base contact by shortest route. Charged unit may Fall Back (half move, triggers Opportunity Attacks on 6+).<br><b>Threat Radius:</b> 1" bubble — enemies can't enter without Charging the nearest unit.<br><b>Climb:</b> D10: 1–3 fall prone, 4–7 climb but stop, 8–10 climb and continue.<br><b>Actions (one per unit):</b> Minor = half move, no Ranged. Major = half move, no further move or Ranged.</div></div></div>
+      <div class="phase-card"><div class="phase-num">3</div><div class="phase-info"><div class="phase-title">Shoot Phase</div><div class="phase-desc">Active player shoots with all ranged weapons. Roll D10 vs unit's Ra score to hit. Then roll D10 + ranged S vs target R to wound.<br><br><b>Cover saves:</b> Woods/Friendly = 6+, Ruins = 5+, Fortifications = 4+<br><b>If moved:</b> Worsen Ra by 1 (e.g. 6+ becomes 7+)<br><b>Cannot shoot</b> through friendlies into combat involving friendlies.</div></div></div>
+      <div class="phase-card"><div class="phase-num">4</div><div class="phase-info"><div class="phase-title">Fight Phase</div><div class="phase-desc">All units in base contact must fight. Priority player chooses order. Both sides roll D10 + Me. Winner makes Strike rolls (D10 + S vs R). On success = Wound.<br><br><b>Natural 10:</b> Auto-win. <b>Natural 1:</b> Auto-lose.<br><b>Cornered:</b> Enemy doubles their attacks. <b>Critical Hit:</b> Wounds on 5+ (not Great Weapons).<br><b>Losing side:</b> Falls back 1" unless Cornered (no space to fall back).</div></div></div>
+      <div class="phase-card"><div class="phase-num">5</div><div class="phase-info"><div class="phase-title">Resolution Phase</div><div class="phase-desc">Check if each Warband is Broken (half starting models lost). Broken warbands must pass Nerve Tests or units flee. Warband Routed when all remaining units fail.</div></div></div>
+      <div class="phase-card" style="border-bottom:none"><div class="phase-num" style="color:var(--gold)">✕</div><div class="phase-info"><div class="phase-title">End Phase (Post-Game)</div><div class="phase-desc">Calculate Victory Points. Each player gains 1D10×3 GP. Roll for Injuries. Calculate & spend Experience. Purchase Equipment and Reinforcements.</div></div></div>
+      <div class="section-header">Stats</div>
+      <div style="margin:0 18px 12px">
         <div class="stat-ref">
-          <div class="stat-ref-row"><div class="srr-key">Sp</div><div class="srr-name">Speed</div><div class="srr-desc">Move in inches per turn. +2" when Charging.</div></div>
-          <div class="stat-ref-row"><div class="srr-key">Me</div><div class="srr-name">Melee</div><div class="srr-desc">Close combat modifier (−3 to +3).</div></div>
-          <div class="stat-ref-row"><div class="srr-key">Ra</div><div class="srr-name">Ranged</div><div class="srr-desc">Ranged weapon target roll (3+ to 10+).</div></div>
-          <div class="stat-ref-row"><div class="srr-key">S</div><div class="srr-name">Strength</div><div class="srr-desc">Hitting power (range 1–10).</div></div>
-          <div class="stat-ref-row"><div class="srr-key">R</div><div class="srr-name">Resilience</div><div class="srr-desc">Resistance to injury (e.g. 4+).</div></div>
-          <div class="stat-ref-row"><div class="srr-key">A</div><div class="srr-name">Attacks</div><div class="srr-desc">Dice rolled in close combat (max 3 baseline).</div></div>
-          <div class="stat-ref-row"><div class="srr-key">W</div><div class="srr-name">Wounds</div><div class="srr-desc">Times wounded before removal (max 10, min 1).</div></div>
-          <div class="stat-ref-row"><div class="srr-key">Nv</div><div class="srr-name">Nerve</div><div class="srr-desc">Bravery. Nerve Test = D10 + Nv. Need 10+ to pass.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">Sp</div><div class="srr-name">Speed</div><div class="srr-desc">Move in inches. +2" Charging.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">Me</div><div class="srr-name">Melee</div><div class="srr-desc">Close combat modifier.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">Ra</div><div class="srr-name">Ranged</div><div class="srr-desc">Target number to hit with ranged weapon.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">S</div><div class="srr-name">Strength</div><div class="srr-desc">Hitting power.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">R</div><div class="srr-name">Resilience</div><div class="srr-desc">Resistance to wounds (e.g. 5+ = wound on 5 or higher).</div></div>
+          <div class="stat-ref-row"><div class="srr-key">A</div><div class="srr-name">Attacks</div><div class="srr-desc">Dice rolled in close combat.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">W</div><div class="srr-name">Wounds</div><div class="srr-desc">Times wounded before removed.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">Nv</div><div class="srr-name">Nerve</div><div class="srr-desc">D10 + Nv ≥ 10 to pass Nerve Test.</div></div>
           <div class="stat-ref-row"><div class="srr-key">Ds</div><div class="srr-name">Destiny</div><div class="srr-desc">Characters only. Spend to alter rolls or use Destined Deeds.</div></div>
         </div>
       </div>
-      <div class="section-header">Nerve Tests</div>
-      <div style="margin:0 18px 16px">
-        <div class="stat-ref">
-          <div class="stat-ref-row"><div class="srr-key">Roll</div><div class="srr-name">Formula</div><div class="srr-desc">D10 + Nerve Value. Result 10+ = Pass. Below 10 = Fail.</div></div>
-          <div class="stat-ref-row"><div class="srr-key">−1</div><div class="srr-name">Shaken</div><div class="srr-desc">Failed by 1 point: half move only, cannot Shoot, Charge or hold Objectives.</div></div>
-          <div class="stat-ref-row"><div class="srr-key">−2+</div><div class="srr-name">Flees</div><div class="srr-desc">Failed by 2+ points: unit flees the field, removed from play.</div></div>
-        </div>
-      </div>
-      <div class="section-header">Dice</div>
-      <div style="margin:0 18px 16px">
-        <div class="stat-ref">
-          <div class="stat-ref-row"><div class="srr-key">D10</div><div class="srr-name">Ten-sided</div><div class="srr-desc">Primary dice. Roll at face value (1–10).</div></div>
-          <div class="stat-ref-row"><div class="srr-key">D5</div><div class="srr-name">Half a D10</div><div class="srr-desc">Roll D10, halve and round up. 1-2=1, 3-4=2, 5-6=3, 7-8=4, 9-10=5.</div></div>
-        </div>
+      <div class="section-header">Wargear Limits</div>
+      <div class="limits-box">
+        <b>Max per unit:</b><br>
+        · 2 melee weapons · 1 ranged weapon · 1 thrown weapon<br>
+        · 1 type of armour · 1 type of shield · 1 mount<br>
+        · 1 Large Item + 1 Small Item <i>or</i> 2 Small Items
       </div>
     </div>
+
+    <!-- ARMOURY PANEL -->
+    <div class="rules-panel" id="rpanel-armoury" style="flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px">
+      <div class="wgcat-title">⚔ Close Combat</div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Sword</div><div class="wgitem-desc">Parry (9+) — re-roll one failed defence per fight.</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Axe / Pick</div><div class="wgitem-desc">Re-roll Strike rolls of 1–2 vs unarmoured targets.</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Mace / Hammer</div><div class="wgitem-desc">Re-roll Strike rolls of 1–2 vs Heavy Armour or Constructs.</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Knife</div><div class="wgitem-desc">+1 to Strike rolls against Cornered enemies.</div></div><div class="wgitem-gp">3gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Staff</div><div class="wgitem-desc">Reach (1) — can fight over 1 friendly unit.</div></div><div class="wgitem-gp">3gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Club</div><div class="wgitem-desc">Win by 3+: enemy is Shaken until end of next Fight Phase.</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Caestus</div><div class="wgitem-desc">Win by 3+: double the number of Strike dice rolled.</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Flail</div><div class="wgitem-desc">+1 S on Charge. Win on natural 10: +1 Attack for that fight.</div></div><div class="wgitem-gp">7gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Halberd / Glaive<span class="wgitem-tag">2H</span></div><div class="wgitem-desc">+1 S on strikes + Reach (1).</div></div><div class="wgitem-gp">7gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Great Weapon<span class="wgitem-tag">2H</span></div><div class="wgitem-desc">+2 S on strikes. Auto-lose ties. No critical hits.</div></div><div class="wgitem-gp">10gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Spear</div><div class="wgitem-desc">Reach (1). Fight in Depth — attack over 1 allied unit.</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Lance<span class="wgitem-tag">Cavalry</span></div><div class="wgitem-desc">+1 S on Charge when mounted.</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgcat-title">🏹 Ranged Weapons</div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Shortbow</div><div class="wgitem-desc">Range 15" · S −1 · Move: half</div></div><div class="wgitem-gp">4gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Bow</div><div class="wgitem-desc">Range 20" · S −1 · Move: half</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Longbow</div><div class="wgitem-desc">Range 25" · S +0 · Move: half</div></div><div class="wgitem-gp">10gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Crossbow</div><div class="wgitem-desc">Range 20" · S +1 · No move restriction</div></div><div class="wgitem-gp">10gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Sling</div><div class="wgitem-desc">Range 12" · S +0 · Full move allowed</div></div><div class="wgitem-gp">3gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Thrown Spear / Javelin</div><div class="wgitem-desc">Range 6"+S · S +1 · Full move allowed</div></div><div class="wgitem-gp">4gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Thrown Axe</div><div class="wgitem-desc">Range 6"+S · S +0 · Full move allowed</div></div><div class="wgitem-gp">3gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Grynvok Warbow<span class="wgitem-tag">Grynvok</span></div><div class="wgitem-desc">Range 15" · S +1 · Move: half</div></div><div class="wgitem-gp">4–8gp</div></div>
+      <div class="wgcat-title">🛡 Armour</div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Light Armour</div><div class="wgitem-desc">+1 Resilience. Furs, leathers and padding.</div></div><div class="wgitem-gp">3gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Armour (Medium)</div><div class="wgitem-desc">+2 Resilience. Chain, lamellar or scale.</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Heavy Armour</div><div class="wgitem-desc">+3 Resilience. −1 Speed. −1 to Climb and Swim tests.</div></div><div class="wgitem-gp">10gp</div></div>
+      <div class="wgcat-title">🔰 Shields</div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Buckler</div><div class="wgitem-desc">Parry (9+). With a Sword: Parry (8+). Small shield.</div></div><div class="wgitem-gp">3gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Shield</div><div class="wgitem-desc">+1 Resilience. Cannot use Ranged (except Thrown) or Great Weapons.</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Tower Shield</div><div class="wgitem-desc">+2 Resilience. −1 Speed (cumulative with Heavy Armour).</div></div><div class="wgitem-gp">7gp</div></div>
+      <div class="wgcat-title">🐴 Mounts</div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Horse</div><div class="wgitem-desc">Sp 12" · S +1 · R 5+</div></div><div class="wgitem-gp">10gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Armoured Horse</div><div class="wgitem-desc">Sp 10" · S +1 · R 6+</div></div><div class="wgitem-gp">15gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">War Horse</div><div class="wgitem-desc">Sp 12" · Me +1 · S +1 · R 5+ · A 1</div></div><div class="wgitem-gp">15gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Armoured War Horse</div><div class="wgitem-desc">Sp 12" · Me +1 · S +1 · R 6+ · A 1</div></div><div class="wgitem-gp">20gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Pony</div><div class="wgitem-desc">Sp 8" · S +0 · R 5+</div></div><div class="wgitem-gp">8gp</div></div>
+      <div class="wgcat-title">🎒 Equipment<span class="wgitem-tag" style="margin-left:8px">Small</span> = 1 slot · <span class="wgitem-tag">Large</span> = 1 slot</div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Climbing Rope<span class="wgitem-tag">Small</span></div><div class="wgitem-desc">+2 to all Climb Tests.</div></div><div class="wgitem-gp">10gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Healing Herbs<span class="wgitem-tag">Small</span></div><div class="wgitem-desc">Up to 3 units in your warband re-roll Injury rolls post-battle. One use (3 times).</div></div><div class="wgitem-gp">15gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Old Map<span class="wgitem-tag">Small</span></div><div class="wgitem-desc">You + 2 allies deploy on a different table edge from Turn 3. One use.</div></div><div class="wgitem-gp">15gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Treasure Map<span class="wgitem-tag">Small</span></div><div class="wgitem-desc">Re-roll Search checks at one chosen Point of Interest. One use.</div></div><div class="wgitem-gp">20gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Battle Venom<span class="wgitem-tag">Small</span></div><div class="wgitem-desc">One weapon gains Venomous Attacks. Lost if weapon is discarded.</div></div><div class="wgitem-gp">15gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Religious Talisman<span class="wgitem-tag">Small</span></div><div class="wgitem-desc">Resistant to Magic. Bearer causes Fear to Demon and Undead units.</div></div><div class="wgitem-gp">25gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Backpack<span class="wgitem-tag">Large</span></div><div class="wgitem-desc">Carry up to 3 Small Items instead of 1.</div></div><div class="wgitem-gp">10gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Trapper's Tools<span class="wgitem-tag">Large</span></div><div class="wgitem-desc">Ignore Trap results on failed Search Checks.</div></div><div class="wgitem-gp">15gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Shovel<span class="wgitem-tag">Large</span></div><div class="wgitem-desc">Dig action: +2 Search, −1 Me that turn.</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Lantern</div><div class="wgitem-desc">Toggle free action. Lit: produces light, gives Fear (Beasts).</div></div><div class="wgitem-gp">5gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Banner<span class="wgitem-tag">Large</span></div><div class="wgitem-desc">Friendly units within 4" get +1 to Battle Rolls (max 10). −1 Climb/Swim. No Ranged (except Thrown).</div></div><div class="wgitem-gp">20gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Horn / Drum<span class="wgitem-tag">Large</span></div><div class="wgitem-desc">Friendly units within 12" gain +50% Speed (non-Charge moves only).</div></div><div class="wgitem-gp">20gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Hunter's Cloak<span class="wgitem-tag">Large</span></div><div class="wgitem-desc">Grants Stalker. Dismounted only, not usable by Monster units.</div></div><div class="wgitem-gp">15gp</div></div>
+      <div class="wgcat-title" style="margin-top:4px">✨ Select Magic Items (Characters Only · max 2)</div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Scorpion's Sting</div><div class="wgitem-desc">Silver Sword with Venomous Attacks.</div></div><div class="wgitem-gp">35gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Liberator</div><div class="wgitem-desc">Sword. Hatred (Leaders). Friendly units within 3" gain +1 Nv.</div></div><div class="wgitem-gp">30gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Black Scream</div><div class="wgitem-desc">Sword. On Charge vs nearest enemy: +1 Me and Onslaught (6+).</div></div><div class="wgitem-gp">25gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Exsanguinator</div><div class="wgitem-desc">Silver Knife. Hatred vs any Cornered enemy.</div></div><div class="wgitem-gp">30gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Hunter's Axe</div><div class="wgitem-desc">Silver Axe. +1 Strike rolls vs Beast keyword units.</div></div><div class="wgitem-gp">30gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Staff of the High Magister</div><div class="wgitem-desc">Staff. Improves all Casting Rolls by 1.</div></div><div class="wgitem-gp">35gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Sentinel's Shield</div><div class="wgitem-desc">Shield. Resistant to Magic.</div></div><div class="wgitem-gp">15gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">White Tower Shield</div><div class="wgitem-desc">Tower Shield. +1 Wound (max 3). Never backs away after a fight.</div></div><div class="wgitem-gp">24gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Honour</div><div class="wgitem-desc">Helm (Small). Use Elite Destined Deed without spending Destiny.</div></div><div class="wgitem-gp">20gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Trollskin Circlet</div><div class="wgitem-desc">Small. Hardy (9+) and Regenerate (8+).</div></div><div class="wgitem-gp">25gp</div></div>
+      <div class="wgitem"><div class="wgitem-left"><div class="wgitem-name">Drekhblood Concoction</div><div class="wgitem-desc">Small. Apply to one weapon. On wound: 8+ deals extra Wound. One use.</div></div><div class="wgitem-gp">20gp</div></div>
+      <div class="wgitem" style="border-bottom:none"><div class="wgitem-left"><div class="wgitem-name">Robes of the Enchanter</div><div class="wgitem-desc">Clothing. +1 Resilience. Resistant to Magic (6+).</div></div><div class="wgitem-gp">35gp</div></div>
+    </div>
+
+    <!-- PROGRESSION PANEL -->
+    <div class="rules-panel" id="rpanel-progress" style="flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px">
+      <div class="section-header" style="margin-top:6px">XP Gains (per battle)</div>
+      <div class="prog-card">
+        <div class="xp-grid">
+          <div class="xp-item">Survived without falling <span class="xp-pts">+5</span></div>
+          <div class="xp-item">Kill an enemy unit <span class="xp-pts">+1</span></div>
+          <div class="xp-item">Kill a Monster <span class="xp-pts">+5</span></div>
+          <div class="xp-item">Kill enemy Leader <span class="xp-pts">+5</span></div>
+          <div class="xp-item">Find Loot <span class="xp-pts">+2</span></div>
+          <div class="xp-item">Find Lost Knowledge <span class="xp-pts">+1</span></div>
+          <div class="xp-item">Warband wins <span class="xp-pts">+2</span></div>
+          <div class="xp-item">Warband loses/draws <span class="xp-pts">+1</span></div>
+        </div>
+        <div style="padding:8px 14px;font-size:12px;color:var(--muted);border-top:1px solid var(--border)">Every <b style="color:var(--gold)">10 XP</b> = Level Up. Roll on the relevant chart below.</div>
+      </div>
+
+      <div class="section-header">Warrior Level Up (D10)</div>
+      <div class="prog-card">
+        <div class="prog-row"><div class="prog-roll">1–5</div><div class="prog-result">Gesture <span>— recognition, minor reward, no stat change</span></div></div>
+        <div class="prog-row"><div class="prog-roll">6–8</div><div class="prog-result">Promotion <span>— loses basic gear, gains promoted unit profile</span></div></div>
+        <div class="prog-row" style="border-bottom:none"><div class="prog-roll">9–10</div><div class="prog-result">Destined for Greatness <span>— becomes a Character with 1 Destiny + Elite or Hatred deed. Can roll on Character chart from now on</span></div></div>
+      </div>
+
+      <div class="section-header">Character Level Up (D10)</div>
+      <div class="prog-card">
+        <div style="padding:8px 14px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border)">When a Character levels up they gain 1 Skill Point to spend on a Specialism Trait. Specialisms: <b style="color:var(--text)">Soldier · Slayer · Seer · Commander · Ranger · Wizard · Tyrant</b></div>
+        <div class="prog-row"><div class="prog-roll">1</div><div class="prog-result" style="color:var(--ember)">Dead</div></div>
+        <div class="prog-row"><div class="prog-roll">2</div><div class="prog-result">Trauma <span>— roll on Mental Trauma chart</span></div></div>
+        <div class="prog-row"><div class="prog-roll">3</div><div class="prog-result">Arm Injury <span>— −1 Me permanently. Second result = Dead</span></div></div>
+        <div class="prog-row"><div class="prog-roll">4</div><div class="prog-result">Leg Injury <span>— −2 Speed (min 1") permanently. Second result = Dead</span></div></div>
+        <div class="prog-row"><div class="prog-roll">5</div><div class="prog-result">Minor Trauma <span>— roll Mental Trauma +2</span></div></div>
+        <div class="prog-row"><div class="prog-roll">6</div><div class="prog-result">Wounded <span>— misses next battle</span></div></div>
+        <div class="prog-row"><div class="prog-roll">7–8</div><div class="prog-result">Full Recovery</div></div>
+        <div class="prog-row" style="border-bottom:none"><div class="prog-roll">9–10</div><div class="prog-result">Fated <span>— full recovery + permanently gains 1 Destiny point</span></div></div>
+      </div>
+
+      <div class="section-header">Mental Trauma (D10)</div>
+      <div class="prog-card">
+        <div class="prog-row"><div class="prog-roll">1</div><div class="prog-result">Madness <span>— loses Leader/Second status. Must charge nearest enemy. Cannot Search.</span></div></div>
+        <div class="prog-row"><div class="prog-roll">2</div><div class="prog-result">Twitch <span>— −1 Me, +1 Ra</span></div></div>
+        <div class="prog-row"><div class="prog-roll">3</div><div class="prog-result">Nervous Disposition <span>— −2 Nerve permanently</span></div></div>
+        <div class="prog-row"><div class="prog-roll">4</div><div class="prog-result">Phobia <span>— last enemy faction now causes Fear to this unit</span></div></div>
+        <div class="prog-row"><div class="prog-roll">5</div><div class="prog-result">Obsession with Vengeance <span>— Hatred vs last warband that took them out</span></div></div>
+        <div class="prog-row"><div class="prog-roll">6</div><div class="prog-result">Fractured Mind <span>— each turn: Nerve Check or controlled by opponent</span></div></div>
+        <div class="prog-row"><div class="prog-roll">7</div><div class="prog-result">Hoarder <span>— warband earns 10% less gold per battle</span></div></div>
+        <div class="prog-row"><div class="prog-roll">8</div><div class="prog-result">Bearer of Blame <span>— cannot benefit from Leader auras; Nerve Check to join Leader's fights</span></div></div>
+        <div class="prog-row"><div class="prog-roll">9</div><div class="prog-result">Odd Habit <span>— whole warband −1 Nerve when this unit fights</span></div></div>
+        <div class="prog-row" style="border-bottom:none"><div class="prog-roll">10</div><div class="prog-result">Die Hard <span>— Nerve cannot be altered. Auto-pass Break Tests. Heart turned cold.</span></div></div>
+      </div>
+
+      <div class="section-header">Warrior Injuries (D10)</div>
+      <div class="prog-card">
+        <div class="prog-row"><div class="prog-roll">1–3</div><div class="prog-result" style="color:var(--ember)">Dead — permanently removed</div></div>
+        <div class="prog-row"><div class="prog-roll">4–6</div><div class="prog-result">Injured <span>— misses next battle</span></div></div>
+        <div class="prog-row" style="border-bottom:none"><div class="prog-roll">7–10</div><div class="prog-result">Minor Wounds <span>— fully recovered, fights next battle</span></div></div>
+      </div>
+
+      <div class="section-header">Progression Routes</div>
+      <div style="margin:0 18px 12px;font-size:12px;color:var(--muted);line-height:1.7">
+        <b style="color:var(--text)">Warriors</b> → Level up → Gesture / Promotion / Destined for Greatness<br>
+        <b style="color:var(--text)">Promoted Warriors</b> → become the next tier unit in their faction (e.g. Man At Arms → Sworn Sword)<br>
+        <b style="color:var(--text)">Destined for Greatness</b> → become a Character with 1 Destiny + Skill Points<br>
+        <b style="color:var(--text)">Characters</b> → gain Skill Points → unlock Specialism Traits → can become Leader or Second<br>
+        <b style="color:var(--text)">Seconds</b> → automatically become Leader if current Leader is slain<br>
+        <b style="color:var(--text)">Note:</b> Monsters cannot gain XP, become Characters, or complete Searches.
+      </div>
+    </div>
+
     <div class="bottom-nav">
       <div class="nav-item" onclick="gotoScreen('home')"><div class="nav-icon">🏰</div>Home</div>
       <div class="nav-item" onclick="gotoScreen('factions')"><div class="nav-icon">⚔️</div>Factions</div>
@@ -422,15 +611,19 @@ const FACTIONS = {
     startingGold:100, warbandLimit:15, mercenarySlots:2,
     bonus:'Marocian Leaders gain +1 Nv and Rank and File. Friendly Marocian Warriors within 4" of the Leader may re-roll failed Nerve Tests.',
     units:[
-      {id:'mar1',name:'Marocian Man At Arms',keywords:'Marocia · Human · Infantry · Warrior · 25mm',gp:10,price:8.99,icon:'⚔️',maxCount:null,
+      {id:'mar1',name:'Marocian Man At Arms',keywords:'Marocia · Human · Infantry · Warrior · 25mm',gp:10,icon:'⚔️',maxCount:null,
        stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'+0',R:'6+',A:'1',W:'1',Nv:'5',Ds:'—'},
        equipment:'Armour; Sword or Axe',
+       options:[{n:'Spear',gp:2},{n:'Bow',gp:2},{n:'Shield',gp:2},{n:'Buckler',gp:1},{n:'Halberd',gp:2},{n:'Warhorn/Drum',gp:20},{n:'Banner',gp:20}],
+       progression:'→ Sworn Sword: gains +1 Melee',
        rules:['Rank and File: +1 R and Nv when in base contact with another unit with this rule']},
-      {id:'mar2',name:'Marocian Lancer',keywords:'Marocia · Human · Cavalry · Warrior · 25mm',gp:18,price:11.99,icon:'🗡️',maxCount:null,
+      {id:'mar2',name:'Marocian Lancer',keywords:'Marocia · Human · Cavalry · Warrior · 25mm',gp:18,icon:'🗡️',maxCount:null,
        stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'+0',R:'6+',A:'1',W:'1',Nv:'5',Ds:'—'},
        equipment:'Armour; Sword or Axe; Lance; Horse',
+       options:[{n:'Shield',gp:2},{n:'Warhorn/Drum',gp:20},{n:'Banner',gp:20}],
+       progression:'→ Freerider: gains +1 Melee',
        rules:['Rank and File: +1 R and Nv when in base contact with another unit with this rule']},
-      {id:'mar3',name:'Great War Veteran',keywords:'Marocia · Human · Infantry · Warrior · 25mm',gp:12,price:9.99,icon:'🛡️',maxCount:null,
+      {id:'mar3',name:'Great War Veteran',keywords:'Marocia · Human · Infantry · Warrior · 25mm',gp:12,icon:'🛡️',maxCount:null,
        stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'+0',R:'6+',A:'1',W:'1',Nv:'6',Ds:'—'},
        equipment:'Armour; Any Hand Weapon',
        rules:['Hatred (Northmen)','Tenacious: +1 Me when within 4" of an Objective or Point of Interest']}
@@ -442,21 +635,27 @@ const FACTIONS = {
     startingGold:100, warbandLimit:15, mercenarySlots:3,
     bonus:'Leaders gain Elite vs Beast, Character and Monster units. Warriors re-roll failed Nerve Checks when charging Fear/Horror enemies. All units gain +1 to Search Rolls.',
     units:[
-      {id:'nor1',name:'Northman Raider',keywords:'Northmen · Human · Infantry · Warrior · 25mm',gp:9,price:7.99,icon:'🪓',maxCount:null,
+      {id:'nor1',name:'Northman Raider',keywords:'Northmen · Human · Infantry · Warrior · 25mm',gp:9,icon:'🪓',maxCount:null,
        stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'+0',R:'5+',A:'1',W:'1',Nv:'5',Ds:'—'},
        equipment:'Light Armour; Sword or Axe',
+       options:[{n:'Spear',gp:2},{n:'Bow',gp:2},{n:'Shield',gp:2},{n:'Thrown Axes',gp:2},{n:'Greataxe',gp:2},{n:'Warhorn/Drum',gp:20},{n:'Banner',gp:20}],
+       progression:'→ Northman Gallog: Immune to Fear; +1 Me vs equal/lower Me',
        rules:['Skilled Raiders: When tying a Battle Roll vs a unit with equal Melee, this unit wins the Fight']},
-      {id:'nor2',name:'Awakynd',keywords:'Northmen · Spirit · Infantry · Warrior · 32mm',gp:22,price:13.99,icon:'👻',maxCount:null,
+      {id:'nor2',name:'Awakynd',keywords:'Northmen · Spirit · Infantry · Warrior · 32mm',gp:22,icon:'👻',maxCount:null,
        stats:{Sp:'5"',Me:'+1',Ra:'7+',S:'+0',R:'—',A:'2',W:'2',Nv:'6',Ds:'—'},
        equipment:'Heavy Armour; Sword or Axe',
+       options:[{n:'Shield',gp:2},{n:'Greataxe',gp:2},{n:'Extra Hand Weapon',gp:4}],
+       progression:'Elite spirit warrior — no standard promotion',
        rules:['Hardy (9+)','Elite']},
-      {id:'nor3',name:'Northman Huscarl',keywords:'Northmen · Human · Infantry · Warrior · 25mm',gp:14,price:10.99,icon:'🛡️',maxCount:null,
+      {id:'nor3',name:'Northman Huscarl',keywords:'Northmen · Human · Infantry · Warrior · 25mm',gp:14,icon:'🛡️',maxCount:null,
        stats:{Sp:'6"',Me:'+1',Ra:'6+',S:'+0',R:'5+',A:'1',W:'1',Nv:'6',Ds:'—'},
        equipment:'Light Armour; Sword or Axe; Huscarl Cloak',
        rules:['Loyal to the Chieftains: Gains Elite when within 6" and Line of Sight of a Friendly Leader','Huscarl Cloak: +1 R vs non-magical Ranged Attacks (Small Item)']},
-      {id:'nor4',name:'Northman Scout',keywords:'Northmen · Human · Cavalry · Warrior · 25mm',gp:16,price:11.99,icon:'🏹',maxCount:null,
+      {id:'nor4',name:'Northman Scout',keywords:'Northmen · Human · Cavalry · Warrior · 25mm',gp:16,icon:'🏹',maxCount:null,
        stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'+0',R:'5+',A:'1',W:'1',Nv:'5',Ds:'—'},
        equipment:'Light Armour; Sword or Axe; Horse',
+       options:[{n:'Spear',gp:2},{n:'Short Bow',gp:1},{n:'Shield',gp:2},{n:'Thrown Axes',gp:2},{n:'Warhorn/Drum',gp:20}],
+       progression:'Scout skirmisher — may become Second',
        rules:[]}
     ]
   },
@@ -466,17 +665,23 @@ const FACTIONS = {
     startingGold:80, warbandLimit:10, mercenarySlots:0,
     bonus:'Leaders gain +1 S and the Hardy (8+) Destined Deed. When Warrior Units are targeted by attacks with S +0 or lower, they count their Resilience as 1 higher.',
     units:[
-      {id:'voh1',name:'Gold Elf Warrior',keywords:'Vohldramar · Gold Elf · Infantry · Warrior · 25mm',gp:19,price:13.99,icon:'⚜️',maxCount:null,
+      {id:'voh1',name:'Gold Elf Warrior',keywords:'Vohldramar · Gold Elf · Infantry · Warrior · 25mm',gp:19,icon:'⚜️',maxCount:null,
        stats:{Sp:'7"',Me:'+1',Ra:'5+',S:'+1',R:'6+',A:'2',W:'1',Nv:'7',Ds:'—'},
        equipment:'Armour; Elven Warblade',
+       options:[{n:'Spear',gp:2},{n:'Bow',gp:2},{n:'Shield',gp:2},{n:'Warhorn',gp:20}],
+       progression:'→ Forge Guard: gains Lifeward (Leader)',
        rules:['Parry (8+)','Elven Warblade: A Sword usable one or two-handed. Two-handed grants +1 Strength']},
-      {id:'voh2',name:'Gold Elf Chevalier',keywords:'Vohldramar · Gold Elf · Cavalry · Warrior · 25mm',gp:29,price:17.99,icon:'🏇',maxCount:null,
+      {id:'voh2',name:'Gold Elf Chevalier',keywords:'Vohldramar · Gold Elf · Cavalry · Warrior · 25mm',gp:29,icon:'🏇',maxCount:null,
        stats:{Sp:'7"',Me:'+1',Ra:'5+',S:'+1',R:'6+',A:'2',W:'1',Nv:'7',Ds:'—'},
        equipment:'Armour; Elven Warblade; Armoured Warhorse',
+       options:[{n:'Spear',gp:2},{n:'Bow',gp:2},{n:'Shield',gp:2},{n:'Warhorn',gp:20}],
+       progression:'Elite cavalry — may become Second or Leader',
        rules:['Parry (8+)']},
-      {id:'voh3',name:'Gold Elf Arquihun',keywords:'Vohldramar · Gold Elf · Infantry · Warrior · 25mm',gp:30,price:18.99,icon:'🔱',maxCount:null,
+      {id:'voh3',name:'Gold Elf Arquihun',keywords:'Vohldramar · Gold Elf · Infantry · Warrior · 25mm',gp:30,icon:'🔱',maxCount:null,
        stats:{Sp:'6"',Me:'+2',Ra:'5+',S:'+1',R:'7+',A:'2',W:'2',Nv:'7',Ds:'—'},
        equipment:'Heavy Armour; Sword; Arquihun Longspear',
+       options:[],
+       progression:'Royal companion — no options, may become Leader',
        rules:['Parry (8+)','Arquihun Longspear: Silver Pike — grants +1 to Strike in Fight Phase']}
     ]
   },
@@ -486,17 +691,23 @@ const FACTIONS = {
     startingGold:90, warbandLimit:10, mercenarySlots:1,
     bonus:'Leaders gain +1 W, −1 Sp and Malefic Honour. Units gain Resistant to Magic when targeted by spells cast from more than 6" away.',
     units:[
-      {id:'gry1',name:'Grynvok Warrior',keywords:'Grynvok Pyreborn · Orc · Grynvok · Infantry · Warrior · 25mm',gp:17,price:11.99,icon:'⚔️',maxCount:null,
+      {id:'gry1',name:'Grynvok Warrior',keywords:'Grynvok Pyreborn · Orc · Grynvok · Infantry · Warrior · 25mm',gp:17,icon:'⚔️',maxCount:null,
        stats:{Sp:'5"',Me:'+0',Ra:'6+',S:'+1',R:'6+',A:'1',W:'2',Nv:'5',Ds:'—'},
        equipment:'Armour; Sword, Axe or Mace',
+       options:[{n:'Spear',gp:2},{n:'Grynvok Warbow',gp:4},{n:'Shield',gp:2}],
+       progression:'→ Grynvok Champion: may become Second or Leader',
        rules:['Hardy (9+)','Malefic Honour: +1 Me for the duration of any Fight involving no other Warband members','Silver Burns: Loses Hardy Special Rule for the duration of any turn wounded by a Silver Weapon']},
-      {id:'gry2',name:'Grynvok Oathsworn',keywords:'Grynvok Pyreborn · Orc · Grynvok · Infantry · Warrior · 25mm',gp:23,price:14.99,icon:'🗡️',maxCount:null,
+      {id:'gry2',name:'Grynvok Oathsworn',keywords:'Grynvok Pyreborn · Orc · Grynvok · Infantry · Warrior · 25mm',gp:23,icon:'🗡️',maxCount:null,
        stats:{Sp:'5"',Me:'+1',Ra:'6+',S:'+1',R:'6+',A:'2',W:'2',Nv:'5',Ds:'—'},
        equipment:'Armour; Glaive and Sword',
+       options:[{n:'Heavy Armour',gp:2}],
+       progression:'Elite oath-warrior — may become Leader',
        rules:['Hardy (8+)','Malefic Honour: +1 Me for the duration of any Fight involving no other Warband members','Infernal Resolve: Select one enemy unit at battle start — Fearless while that unit is on the battlefield','Silver Burns: Loses Hardy when wounded by Silver that turn']},
-      {id:'gry3',name:'Grynvok Shadebrand',keywords:'Grynvok Pyreborn · Orc · Grynvok · Infantry · Warrior · 25mm',gp:16,price:10.99,icon:'🕵️',maxCount:null,
+      {id:'gry3',name:'Grynvok Shadebrand',keywords:'Grynvok Pyreborn · Orc · Grynvok · Infantry · Warrior · 25mm',gp:16,icon:'🕵️',maxCount:null,
        stats:{Sp:'5"',Me:'+0',Ra:'6+',S:'+1',R:'5+',A:'1',W:'2',Nv:'4',Ds:'—'},
        equipment:'Light Armour; Sword or Mace',
+       options:[{n:'Great Weapon',gp:2},{n:'Grynvok Warbow',gp:4},{n:'Extra Hand Weapon',gp:4},{n:'Caestus',gp:2}],
+       progression:'Dishonoured — can become Leader (Nerve penalty to Warrior/Oathsworn)',
        rules:['Hardy (9+)','Mountain Creature','Hatred (Demons)','Stalker','Silver Burns: Loses Hardy when wounded by Silver that turn']}
     ]
   },
@@ -506,21 +717,27 @@ const FACTIONS = {
     startingGold:120, warbandLimit:15, mercenarySlots:1,
     bonus:'When the Warband Leader takes a Wound, the controlling player may roll D10. On a 6+ the Wound is allocated to a Friendly Goblin within 2" instead. Cannot be saved.',
     units:[
-      {id:'dee1',name:'Goblin Tribal',keywords:'Deep Dwellers · Goblin · Infantry · Warrior · 25mm',gp:7,price:5.99,icon:'👺',maxCount:null,
+      {id:'dee1',name:'Goblin Tribal',keywords:'Deep Dwellers · Goblin · Infantry · Warrior · 25mm',gp:7,icon:'👺',maxCount:null,
        stats:{Sp:'5"',Me:'−1',Ra:'7+',S:'+0',R:'5+',A:'1',W:'1',Nv:'4',Ds:'—'},
        equipment:'Light Armour; Improvised Hand Weapon',
        rules:['Mountain Dweller','Horde Tactics: May fight "over" allied units exactly as if armed with a Spear, but can be targeted for Strikes as if in base contact']},
-      {id:'dee2',name:'Goblin Trapper',keywords:'Deep Dwellers · Goblin · Infantry · Warrior · 25mm',gp:8,price:6.99,icon:'🪤',maxCount:null,
+      {id:'dee2',name:'Goblin Trapper',keywords:'Deep Dwellers · Goblin · Infantry · Warrior · 25mm',gp:8,icon:'🪤',maxCount:null,
        stats:{Sp:'5"',Me:'−1',Ra:'6+',S:'+0',R:'5+',A:'1',W:'1',Nv:'4',Ds:'—'},
        equipment:'Light Armour; Improvised Hand Weapon; Sling',
+       options:[{n:'Swap Sling→Throwing Knives',gp:0},{n:'Beast-Net',gp:4},{n:'Man-Catcher',gp:4}],
+       progression:'Specialist trap unit — may become Second',
        rules:['Mountain Dweller','Horde Tactics (see Goblin Tribal)']},
-      {id:'dee3',name:'Goblin Berserker',keywords:'Deep Dwellers · Goblin · Infantry · Warrior · 25mm',gp:12,price:8.99,icon:'💢',maxCount:null,
+      {id:'dee3',name:'Goblin Berserker',keywords:'Deep Dwellers · Goblin · Infantry · Warrior · 25mm',gp:12,icon:'💢',maxCount:null,
        stats:{Sp:'5"',Me:'+0',Ra:'8+',S:'+0',R:'6+',A:'2',W:'1',Nv:'5',Ds:'—'},
        equipment:'Armour; Knife and Great Weapon',
+       options:[],
+       progression:'→ Leader/Second (gains Broken Mind trauma — warning!)',
        rules:['Mountain Dweller','Horde Tactics (see Goblin Tribal)','Ferocious: Hardy (8+). When struck but not wounded in Close Combat, attacker suffers a S+0 Hit']},
-      {id:'dee4',name:'Depth Troll',keywords:'Deep Dwellers · Troll · Monster · Warrior · 40mm',gp:80,price:29.99,icon:'🧌',maxCount:1,
+      {id:'dee4',name:'Depth Troll',keywords:'Deep Dwellers · Troll · Monster · Warrior · 40mm',gp:80,icon:'🧌',maxCount:1,
        stats:{Sp:'6"',Me:'+2',Ra:'7+',S:'+2',R:'6+',A:'3',W:'3',Nv:'4',Ds:'—'},
        equipment:'Improvised Hand Weapon',
+       options:[],
+       progression:'Cannot gain Experience or become a Character',
        rules:['Hardy (8+)','Horrifying','Regenerate (9+)','Crushing Blows','Onslaught (6+)','Aquatic: Treats Water Features as Open Ground','Silver Burns: Loses Hardy and Regenerate when wounded by Silver or Flaming that turn','Monster: Cannot gain Experience, become a Character, or Complete Searches','UNIQUE: Only 1 per Warband']}
     ]
   },
@@ -530,49 +747,59 @@ const FACTIONS = {
     startingGold:120, warbandLimit:12, mercenarySlots:0,
     bonus:'All units must be Mercenaries. May be led by Human or Elf (Elf reduces starting funds to 100GP). Earns 1D10×4 GP after battles instead of ×3.',
     units:[
-      {id:'merc1',name:'Thug',keywords:'Mercenary · Human · Warrior · 25mm',gp:8,price:5.99,icon:'🤜',maxCount:null,
+      {id:'merc1',name:'Thug',keywords:'Mercenary · Human · Warrior · 25mm',gp:8,icon:'🤜',maxCount:null,
        stats:{Sp:'6"',Me:'+0',Ra:'7+',S:'0',R:'4+',A:'1',W:'1',Nv:'3',Ds:'—'},
        equipment:'Improvised Hand Weapon',
        rules:['Cowardly: −1 to all Nerve Checks when Warband is Routed','Unwashed: Cannot join Elf Warbands or any Warband with an Elf Unit']},
-      {id:'merc2',name:'Hound',keywords:'Mercenary · Dog · Beast · Warrior · 32mm',gp:10,price:7.99,icon:'🐕',maxCount:null,
+      {id:'merc2',name:'Hound',keywords:'Mercenary · Dog · Beast · Warrior · 32mm',gp:10,icon:'🐕',maxCount:null,
        stats:{Sp:'8"',Me:'+0',Ra:'—',S:'+1',R:'4+',A:'1',W:'1',Nv:'4',Ds:'—'},
        equipment:'Teeth',
        rules:['Overwhelm: When winning Battle Roll, may forgo all Strikes to take an Opposed Strength Test. Win = target knocked Prone']},
-      {id:'merc3',name:'Henchman',keywords:'Mercenary · Human · Warrior · 25mm',gp:9,price:6.99,icon:'⚔️',maxCount:null,
+      {id:'merc3',name:'Henchman',keywords:'Mercenary · Human · Warrior · 25mm',gp:9,icon:'⚔️',maxCount:null,
        stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'0',R:'5+',A:'1',W:'1',Nv:'4',Ds:'—'},
        equipment:'Light Armour; Hand Weapon',
        rules:['Unwashed: Cannot join Elf Warbands or any Warband with an Elf Unit']},
-      {id:'merc4',name:'Poacher',keywords:'Mercenary · Human · Warrior · 25mm',gp:10,price:7.99,icon:'🏹',maxCount:null,
+      {id:'merc4',name:'Poacher',keywords:'Mercenary · Human · Warrior · 25mm',gp:10,icon:'🏹',maxCount:null,
        stats:{Sp:'6"',Me:'+0',Ra:'5+',S:'0',R:'5+',A:'1',W:'1',Nv:'4',Ds:'—'},
        equipment:'Light Armour; Sword or Axe; Bow',
        rules:['Strider','Hunter: +1 to Ranged Strike Rolls against Beast Units']},
-      {id:'merc5',name:'Wandering Elf',keywords:'Mercenary · Elf · Warrior · 25mm',gp:50,price:24.99,icon:'🧝',maxCount:null,
+      {id:'merc5',name:'Wandering Elf',keywords:'Mercenary · Elf · Warrior · 25mm',gp:50,icon:'🧝',maxCount:null,
        stats:{Sp:'7"',Me:'+1',Ra:'4+',S:'+1',R:'4+',A:'2',W:'2',Nv:'7',Ds:'1'},
        equipment:'Light Armour; Dagger',
        rules:['Emnity: Will not work with Warbands containing Orcs or Goblins']},
-      {id:'merc6',name:'Ogre Mercenary',keywords:'Mercenary · Ogre · Monster · Infantry · Warrior · 40mm',gp:60,price:29.99,icon:'👹',maxCount:1,
+      {id:'merc6',name:'Ogre Mercenary',keywords:'Mercenary · Ogre · Monster · Infantry · Warrior · 40mm',gp:60,icon:'👹',maxCount:1,
        stats:{Sp:'6"',Me:'+1',Ra:'7+',S:'+2',R:'6+',A:'3',W:'3',Nv:'5',Ds:'—'},
        equipment:'Light Armour; Sword or Club',
        rules:['Fear','Onslaught (7+)','Bully: +1 to Battle Rolls vs a single man-sized or smaller Enemy','The Biggest: Only 1 Ogre Mercenary per Warband']},
-      {id:'merc7',name:'Witchseeker',keywords:'Mercenary · Human · Character · 25mm',gp:35,price:19.99,icon:'🔍',maxCount:null,
+      {id:'merc7',name:'Witchseeker',keywords:'Mercenary · Human · Character · 25mm',gp:35,icon:'🔍',maxCount:null,
        stats:{Sp:'6"',Me:'+1',Ra:'5+',S:'+0',R:'5+',A:'2',W:'2',Nv:'6',Ds:'1'},
        equipment:'Light Armour; Sword; Hand Crossbow (range 10")',
        rules:['Hatred (Magic Users)','Witchseeker: Re-roll one Battle Roll when fighting an Enemy Spellcaster','Null Bolts: Hand Crossbow wounds on Magic Users cause an additional Wound']},
-      {id:'merc8',name:'Hedge Wizard',keywords:'Mercenary · Human · Character · 25mm',gp:35,price:19.99,icon:'🧙',maxCount:null,
+      {id:'merc8',name:'Hedge Wizard',keywords:'Mercenary · Human · Character · 25mm',gp:35,icon:'🧙',maxCount:null,
        stats:{Sp:'6"',Me:'+0',Ra:'5+',S:'+0',R:'5+',A:'1',W:'2',Nv:'5',Ds:'1'},
        equipment:'Light Armour; Staff',
        rules:['Magic Powers: Sunflare (7+), Blast (6+)']},
-      {id:'merc9',name:'Surface Dwarf Sellaxe',keywords:'Mercenary · Dwarf · Character · 25mm',gp:50,price:24.99,icon:'🪨',maxCount:null,
+      {id:'merc9',name:'Surface Dwarf Sellaxe',keywords:'Mercenary · Dwarf · Character · 25mm',gp:50,icon:'🪨',maxCount:null,
        stats:{Sp:'5"',Me:'+1',Ra:'5+',S:'+1',R:'6+',A:'2',W:'2',Nv:'6',Ds:'1'},
        equipment:'Armour; Axe',
        rules:['Hatred (Orcs or Goblins)','Oath Made in Iron: Will not Flee while the Hiring Leader is on the board','Emnity: Will not work with Warbands containing Goblins']},
-      {id:'merc10',name:'Madman Guide',keywords:'Mercenary · Human · Warrior · 25mm',gp:25,price:14.99,icon:'🗺️',maxCount:1,
+      {id:'merc10',name:'Madman Guide',keywords:'Mercenary · Human · Warrior · 25mm',gp:25,icon:'🗺️',maxCount:1,
        stats:{Sp:'6"',Me:'+0',Ra:'7+',S:'0',R:'4+',A:'1',W:'1',Nv:'4',Ds:'—'},
        equipment:'Improvised Hand Weapon',
        rules:['Local Knowledge: Select one table quarter at battle start — units treat it as Open Ground and re-roll failed Agility Checks for Traps there','Loner: Only 1 Madman Guide per Warband']}
     ]
   }
 };
+
+// ─── PRINT PRICE (keyword-driven) ────────────────────────────────
+function getPrintPrice(unit) {
+  const kw = unit.keywords || '';
+  let p = 2.00; // 25mm default
+  if (kw.includes('40mm')) p = 5.00;
+  else if (kw.includes('32mm')) p = 3.00;
+  if (kw.includes('Monster')) p += 3.00;
+  return p;
+}
 
 // ─── STATE ───────────────────────────────────────────────────────
 let warband = []; // { ...unit, instanceId }
@@ -671,7 +898,9 @@ function renderUnits() {
           ${inWarband ? `<div class="unit-btn remove" onclick="removeOneUnit('${unit.id}')">− Remove</div>` : ''}
           ${canAdd ? `<div class="unit-btn add" onclick="addUnit('${unit.id}')">+ Add</div>` : `<div class="unit-btn add" style="opacity:.4;cursor:not-allowed">+ Add</div>`}
         </div>
-      </div>`;
+      </div>
+      ${(unit.options && unit.options.length > 0) || unit.progression ? `<div class="opts-toggle"><div class="opts-btn" onclick="toggleOpts(this)">⚙ OPTIONS & PROGRESSION <span style='margin-left:auto'>▾</span></div><div class="opts-panel">${unit.options && unit.options.length > 0 ? '<div class="opts-grid">' + unit.options.map(o=>`<div class="opt-pill">${o.n} <span class="opt-gp">${o.gp>0?o.gp+'gp':'free'}</span></div>`).join('') + '</div>' : ''}<div class="prog-note">⟳ ${unit.progression||'—'}</div></div></div>` : ''}
+      <div style='font-size:10px;color:var(--ember);font-family:Share Tech Mono,monospace;padding:4px 0 0'>🖨 £${getPrintPrice(unit).toFixed(2)} print</div>`;
     list.appendChild(card);
   });
 
@@ -714,7 +943,7 @@ function renderWarband() {
   }
 
   const totalGp = getWarbandGold();
-  const totalGbp = warband.reduce((s,u) => s + u.price, 0);
+  const totalGbp = warband.reduce((s,u) => s + getPrintPrice(u), 0);
 
   content.innerHTML = `
     <div class="warband-summary">
@@ -747,7 +976,7 @@ function tryOrder() { if (warband.length === 0) return; renderOrder(); gotoScree
 
 // ─── ORDER SCREEN ────────────────────────────────────────────────
 function renderOrder() {
-  const subtotal = warband.reduce((s,u) => s + u.price, 0);
+  const subtotal = warband.reduce((s,u) => s + getPrintPrice(u), 0);
   document.getElementById('order-items').innerHTML = warband.map(u => `
     <div class="order-item">
       <div class="oi-thumb">${u.icon}</div>
@@ -888,6 +1117,22 @@ function confirmReset() {
   btn.addEventListener('mouseup',()=>{ if(!held){clearTimeout(t);btn.textContent='↺ RESET GAME';btn.style.color='';btn.style.borderColor='';}},{once:true});
 }
 
+// ─── RULES TABS ──────────────────────────────────────────────────
+function showRulesTab(tab) {
+  document.querySelectorAll('.rtab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.rules-panel').forEach(p => {
+    p.classList.toggle('active', p.id === 'rpanel-' + tab);
+    p.style.display = p.id === 'rpanel-' + tab ? 'block' : 'none';
+  });
+}
+
+// ─── OPTIONS TOGGLE ──────────────────────────────────────────────
+function toggleOpts(btn) {
+  const panel = btn.nextElementSibling;
+  const open = panel.classList.toggle('open');
+  btn.querySelector('span').textContent = open ? '▴' : '▾';
+}
+
 // ─── TOAST ───────────────────────────────────────────────────────
 let toastTimer = null;
 function showToast(msg) {
@@ -899,3 +1144,4 @@ function showToast(msg) {
 </script>
 </body>
 </html>
+
