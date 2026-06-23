@@ -14,6 +14,17 @@
     --gold:#c9a227;--gold-dim:#7a6018;--ember:#c94a1a;--ember-glow:#e05a22;
     --text:#ded5c0;--muted:#7a7060;--faint:#3a3530;
   }
+  /* ── BACKGROUND IMAGE ── commit bg.jpg to repo root to activate ── */
+  html,body{background:var(--bg) url('bg.jpg') center/cover no-repeat fixed}
+  html::before{content:'';position:fixed;inset:0;background:rgba(9,8,12,.72);z-index:0;pointer-events:none}
+  #app{position:relative;z-index:1}
+  /* ── FACTION BANNER IMAGES ─────────────────────────────────────── */
+  .faction-banner-img{width:100%;height:160px;object-fit:cover;object-position:top;border-radius:10px;margin-bottom:10px;display:block}
+  .faction-banner-img.hidden{display:none}
+  /* ── UNIT CARD IMAGE ───────────────────────────────────────────── */
+  .unit-store-img{width:64px;height:64px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)}
+  .unit-header-with-img{display:flex;gap:12px;align-items:flex-start}
+  .unit-header-text{flex:1;min-width:0}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,serif;height:100%;overflow:hidden;user-select:none}
   #app{height:100dvh;display:flex;flex-direction:column;max-width:440px;margin:0 auto;position:relative;overflow:hidden}
@@ -791,6 +802,30 @@ const FACTIONS = {
   }
 };
 
+// ══════════════════════════════════════════════════════════════════
+// STORE IMAGES — set USE_STORE_IMAGES = false to revert to emojis
+// ══════════════════════════════════════════════════════════════════
+const USE_STORE_IMAGES = true;
+
+// Maps unit ID → Shopify CDN image URL (permanent URLs, no expiry)
+const STORE_IMAGES = {
+  // Kingdom of Marocia
+  mar1: 'https://ironcladforge.co.uk/cdn/shop/files/IMG_3259.jpg?v=1757411612', // Men-At-Arms
+  mar2: 'https://ironcladforge.co.uk/cdn/shop/files/IMG_1832.jpg?v=1752049422', // Lancers
+  mar3: 'https://ironcladforge.co.uk/cdn/shop/files/IMG_3321.jpg?v=1757595907', // Veterans (Hardheads)
+  // Deep Dwellers
+  dee1: 'https://ironcladforge.co.uk/cdn/shop/files/IMG_3352.jpg?v=1757595903', // Goblin Tribal (Slaverkin pack)
+  dee2: 'https://ironcladforge.co.uk/cdn/shop/files/IMG_3352.jpg?v=1757595903', // Trapper (same pack shot for now)
+  dee3: 'https://ironcladforge.co.uk/cdn/shop/files/IMG_3352.jpg?v=1757595903', // Berserker (same pack shot for now)
+  dee4: 'https://ironcladforge.co.uk/cdn/shop/files/IMG_3352.jpg?v=1757595903', // Depth Troll (same pack shot for now)
+};
+
+// Maps faction key → banner image URL (shown at top of units screen)
+const FACTION_BANNERS = {
+  marocia: 'https://ironcladforge.co.uk/cdn/shop/files/IMG_3259.jpg?v=1757411612',
+  deep:    'https://ironcladforge.co.uk/cdn/shop/files/IMG_3342.jpg?v=1757600355',
+};
+
 // ─── PRINT PRICE (keyword-driven) ────────────────────────────────
 function getPrintPrice(unit) {
   const kw = unit.keywords || '';
@@ -855,9 +890,15 @@ function renderUnits() {
   const wl = f.warbandLimit;
   const unitCount = warband.length;
 
-  list.innerHTML = `
-    <div class="gold-limit">
-      <div class="gold-grid">
+  // Faction banner image
+  const bannerEl = document.getElementById('faction-banner-img');
+  if (bannerEl) {
+    const bannerUrl = USE_STORE_IMAGES && FACTION_BANNERS[currentFaction];
+    if (bannerUrl) { bannerEl.src = bannerUrl; bannerEl.classList.remove('hidden'); }
+    else { bannerEl.classList.add('hidden'); }
+  }
+
+  list.innerHTML = `\n    <div class="gold-limit">\n      <div class="gold-grid">
         <div class="gold-label">WARBAND GOLD</div>
         <div class="gold-value">${gp} / ${sg} gp</div>
         <div class="gold-bar"><div class="gold-bar-fill" style="width:${Math.min(100,(gp/sg)*100)}%"></div></div>
@@ -881,13 +922,13 @@ function renderUnits() {
 
     const card = document.createElement('div');
     card.className = 'unit-card' + (inWarband ? ' in-warband' : '');
+    const storeImg = USE_STORE_IMAGES && STORE_IMAGES[unit.id];
     card.innerHTML = `
       <div class="unit-header">
-        <div>
-          <div class="unit-name">${unit.icon} ${unit.name}</div>
-          <div class="unit-keywords">${unit.keywords}</div>
-        </div>
-        <div class="unit-cost">${unit.gp} gp</div>
+        ${storeImg
+          ? `<div class="unit-header-with-img"><img class="unit-store-img" src="${storeImg}" alt="${unit.name}" onerror="this.style.display='none'"><div class="unit-header-text"><div class="unit-name">${unit.name}</div><div class="unit-keywords">${unit.keywords}</div></div><div class="unit-cost">${unit.gp} gp</div></div>`
+          : `<div><div class="unit-name">${unit.icon} ${unit.name}</div><div class="unit-keywords">${unit.keywords}</div></div><div class="unit-cost">${unit.gp} gp</div>`
+        }
       </div>
       <div class="stat-block">${statsHtml}</div>
       ${unit.equipment ? `<div class="unit-equip"><b>EQUIPMENT</b> ${unit.equipment}</div>` : ''}
