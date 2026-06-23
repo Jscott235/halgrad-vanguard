@@ -15,8 +15,7 @@
     --text:#ded5c0;--muted:#7a7060;--faint:#3a3530;
   }
   /* ── BACKGROUND IMAGE ── commit bg.jpg to repo root to activate ── */
-  html,body{background:var(--bg) url('bg.jpg') center/cover no-repeat fixed}
-  html::before{content:'';position:fixed;inset:0;background:rgba(9,8,12,.60);z-index:0;pointer-events:none}
+  html,body{background:var(--bg)}
   #app{position:relative;z-index:1}
   /* ── FACTION BANNER IMAGES ─────────────────────────────────────── */
   .faction-banner-img{width:100%;height:160px;object-fit:cover;object-position:top;border-radius:10px;margin-bottom:10px;display:block}
@@ -289,7 +288,8 @@
 </style>
 </head>
 <body>
-<div id="app">
+<div id="bg-layer" style="position:fixed;inset:0;z-index:0;background:url('bg.png') center/cover no-repeat;opacity:0.18;pointer-events:none"></div>
+<div id="app" style="position:relative;z-index:1">
 
   <!-- HOME -->
   <div class="screen active" id="screen-home">
