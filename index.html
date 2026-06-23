@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#09080c">
+<title>Halgrad Vanguard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#09080c;--surface:#100f15;--surface2:#17151f;--border:#2a2535;
+    --gold:#c9a227;--gold-dim:#7a6018;--ember:#c94a1a;--ember-glow:#e05a22;
+    --text:#ded5c0;--muted:#7a7060;--faint:#3a3530;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,serif;height:100%;overflow:hidden;user-select:none}
+  #app{height:100dvh;display:flex;flex-direction:column;max-width:440px;margin:0 auto;position:relative;overflow:hidden}
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;transform:translateX(30px)}
+  .screen.active{opacity:1;pointer-events:all;transform:translateX(0)}
+  .screen.exit{opacity:0;transform:translateX(-30px)}
+  .scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+  .scroll-area::-webkit-scrollbar{display:none}
+  .topbar{display:flex;align-items:center;padding:14px 18px 12px;border-bottom:1px solid var(--border);background:var(--bg);flex-shrink:0;gap:12px;min-height:56px}
+  .topbar-back{width:32px;height:32px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:16px;transition:background .2s}
+  .topbar-back:active{background:var(--faint)}
+  .topbar-title{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.08em;color:var(--gold);flex:1}
+  .topbar-badge{background:var(--ember);color:white;font-family:'Share Tech Mono',monospace;font-size:11px;padding:3px 8px;border-radius:20px;letter-spacing:.04em;white-space:nowrap}
+  .bottom-nav{display:flex;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;position:relative;z-index:10}
+  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 12px;cursor:pointer;gap:4px;transition:color .2s;color:var(--muted);font-size:9px;font-family:'Cinzel',serif;letter-spacing:.06em}
+  .nav-item.active{color:var(--gold)}
+  .nav-item .nav-icon{font-size:18px;line-height:1}
+
+  /* HOME */
+  .home-hero{flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px 30px;text-align:center;position:relative;overflow:hidden}
+  .home-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(201,162,39,.08) 0%,transparent 70%);pointer-events:none}
+  .crest{width:110px;height:110px;border:2px solid var(--gold-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:52px;margin-bottom:22px;position:relative;background:radial-gradient(ellipse at center,#1a1525 0%,var(--bg) 70%);box-shadow:0 0 40px rgba(201,162,39,.12),inset 0 0 20px rgba(0,0,0,.5)}
+  .crest::after{content:'';position:absolute;inset:5px;border:1px solid rgba(201,162,39,.2);border-radius:50%}
+  .home-logo{font-family:'Cinzel',serif;font-size:28px;font-weight:900;letter-spacing:.12em;color:var(--gold);text-shadow:0 0 30px rgba(201,162,39,.4);margin-bottom:4px}
+  .home-sub{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+  .home-divider{width:60px;height:1px;background:linear-gradient(to right,transparent,var(--gold-dim),transparent);margin:16px auto}
+  .home-tagline{font-size:15px;font-style:italic;color:var(--muted);line-height:1.5;max-width:280px}
+  .home-cta{display:block;margin:0 18px;padding:16px;background:linear-gradient(135deg,var(--ember) 0%,#a03515 100%);border:1px solid var(--ember-glow);border-radius:10px;text-align:center;font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:.12em;color:white;cursor:pointer;box-shadow:0 4px 20px rgba(201,74,26,.3);transition:transform .15s,box-shadow .15s;text-shadow:0 1px 3px rgba(0,0,0,.4);flex-shrink:0}
+  .home-cta:active{transform:scale(.98)}
+  .home-quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 18px;flex-shrink:0}
+  .quick-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:border-color .2s;display:flex;flex-direction:column;gap:6px}
+  .quick-card:active{border-color:var(--gold-dim)}
+  .quick-card .qc-icon{font-size:22px}
+  .quick-card .qc-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;color:var(--gold)}
+  .quick-card .qc-desc{font-size:12px;color:var(--muted);line-height:1.3}
+  .lore-pill{margin:0 18px 14px;background:linear-gradient(135deg,rgba(61,26,92,.3) 0%,var(--surface) 60%);border:1px solid rgba(155,85,200,.2);border-radius:10px;padding:12px 14px;font-size:13px;font-style:italic;color:var(--muted);line-height:1.5;flex-shrink:0}
+
+  /* FACTIONS */
+  .section-header{padding:20px 18px 12px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+  .faction-card{margin:0 18px 12px;border-radius:12px;overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:transform .2s,border-color .2s;position:relative}
+  .faction-card:active{transform:scale(.98)}
+  .faction-card-inner{padding:18px 16px;display:flex;align-items:center;gap:14px;position:relative}
+  .faction-icon{font-size:36px;flex-shrink:0;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid rgba(255,255,255,.1)}
+  .faction-info{flex:1}
+  .faction-name{font-family:'Cinzel',serif;font-size:15px;font-weight:700;margin-bottom:4px;letter-spacing:.05em}
+  .faction-tagline{font-size:12px;color:var(--muted);font-style:italic;line-height:1.4;margin-bottom:8px}
+  .faction-tags{display:flex;gap:5px;flex-wrap:wrap}
+  .faction-tag{font-size:10px;font-family:'Share Tech Mono',monospace;padding:2px 7px;border-radius:4px;border:1px solid;letter-spacing:.04em}
+  .faction-arrow{font-size:18px;color:var(--muted);flex-shrink:0}
+  .faction-org{font-size:11px;color:var(--muted);padding:0 16px 14px;font-family:'Share Tech Mono',monospace;display:flex;gap:16px}
+  .faction-org span{display:flex;align-items:center;gap:4px}
+  .faction-org b{color:var(--gold)}
+
+  /* Faction themes */
+  .f-marocia{background:linear-gradient(135deg,rgba(26,58,107,.4) 0%,var(--surface) 60%);border-color:rgba(74,122,181,.3)}
+  .f-marocia .faction-name{color:#6a9fc0}.f-marocia .faction-icon{background:rgba(26,58,107,.4)}.f-marocia .faction-tag{border-color:rgba(74,122,181,.4);color:#6a9fc0}
+  .f-northmen{background:linear-gradient(135deg,rgba(42,63,90,.4) 0%,var(--surface) 60%);border-color:rgba(106,159,192,.3)}
+  .f-northmen .faction-name{color:#8abdd5}.f-northmen .faction-icon{background:rgba(42,63,90,.4)}.f-northmen .faction-tag{border-color:rgba(106,159,192,.4);color:#8abdd5}
+  .f-vohldramar{background:linear-gradient(135deg,rgba(100,80,20,.4) 0%,var(--surface) 60%);border-color:rgba(200,168,75,.3)}
+  .f-vohldramar .faction-name{color:#c8a84b}.f-vohldramar .faction-icon{background:rgba(100,80,20,.4)}.f-vohldramar .faction-tag{border-color:rgba(200,168,75,.4);color:#c8a84b}
+  .f-grynvok{background:linear-gradient(135deg,rgba(92,42,10,.5) 0%,var(--surface) 60%);border-color:rgba(212,100,26,.3)}
+  .f-grynvok .faction-name{color:#d4741a}.f-grynvok .faction-icon{background:rgba(92,42,10,.4)}.f-grynvok .faction-tag{border-color:rgba(212,100,26,.4);color:#d4741a}
+  .f-deep{background:linear-gradient(135deg,rgba(10,58,42,.5) 0%,var(--surface) 60%);border-color:rgba(42,170,106,.3)}
+  .f-deep .faction-name{color:#3acc80}.f-deep .faction-icon{background:rgba(10,58,42,.4)}.f-deep .faction-tag{border-color:rgba(42,170,106,.4);color:#3acc80}
+  .f-mercenaries{background:linear-gradient(135deg,rgba(80,65,30,.4) 0%,var(--surface) 60%);border-color:rgba(176,160,128,.3)}
+  .f-mercenaries .faction-name{color:#b0a080}.f-mercenaries .faction-icon{background:rgba(80,65,30,.4)}.f-mercenaries .faction-tag{border-color:rgba(176,160,128,.4);color:#b0a080}
+
+  /* UNITS */
+  .faction-banner{padding:14px 18px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);flex-shrink:0}
+  .faction-banner-icon{font-size:28px}
+  .faction-banner-name{font-family:'Cinzel',serif;font-size:16px;font-weight:700}
+  .faction-banner-sub{font-size:11px;color:var(--muted);font-style:italic}
+  .faction-bonus-pill{margin:10px 18px 0;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--muted);line-height:1.4;flex-shrink:0}
+  .faction-bonus-pill b{color:var(--gold);font-family:'Cinzel',serif;font-size:10px;letter-spacing:.06em}
+  .gold-limit{margin:10px 18px 4px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;flex-shrink:0}
+  .gold-grid{display:grid;grid-template-columns:1fr auto;gap:4px;width:100%}
+  .gold-label{font-size:11px;color:var(--muted);font-family:'Cinzel',serif;letter-spacing:.06em}
+  .gold-value{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--gold);letter-spacing:.04em}
+  .gold-bar{height:3px;background:var(--faint);border-radius:2px;margin:6px 0 0;overflow:hidden;grid-column:1/-1}
+  .gold-bar-fill{height:100%;background:linear-gradient(to right,var(--gold-dim),var(--gold));border-radius:2px;transition:width .3s}
+  .limit-sub{grid-column:1/-1;font-size:10px;color:var(--muted);font-family:'Share Tech Mono',monospace;margin-top:2px}
+
+  .unit-card{margin:0 18px 12px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s}
+  .unit-card.in-warband{border-color:var(--gold-dim)}
+  .unit-header{padding:12px 14px 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .unit-name{font-family:'Cinzel',serif;font-size:13px;font-weight:600;letter-spacing:.04em;margin-bottom:3px}
+  .unit-keywords{font-size:10px;color:var(--muted);font-style:italic;line-height:1.3}
+  .unit-cost{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--gold);white-space:nowrap;flex-shrink:0;background:rgba(201,162,39,.08);padding:3px 8px;border-radius:6px;border:1px solid rgba(201,162,39,.2)}
+  .stat-block{display:grid;grid-template-columns:repeat(9,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .stat-cell{display:flex;flex-direction:column;align-items:center;padding:6px 2px;border-right:1px solid var(--border)}
+  .stat-cell:last-child{border-right:none}
+  .stat-key{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.04em;margin-bottom:2px}
+  .stat-val{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);font-weight:bold}
+  .unit-equip{padding:6px 14px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border)}
+  .unit-equip b{color:var(--text);font-size:10px;font-family:'Cinzel',serif;letter-spacing:.05em}
+  .unit-rules{padding:6px 14px;border-bottom:1px solid var(--border)}
+  .unit-rule{font-size:11px;color:var(--muted);line-height:1.4;padding:2px 0;display:flex;gap:5px}
+  .unit-rule::before{content:'▸';color:var(--gold-dim);flex-shrink:0;font-size:9px;margin-top:2px}
+  .unit-footer{padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .unit-count{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold);background:rgba(201,162,39,.08);padding:3px 8px;border-radius:6px;border:1px solid rgba(201,162,39,.2)}
+  .unit-btn{padding:6px 12px;border-radius:7px;font-family:'Cinzel',serif;font-size:11px;font-weight:600;letter-spacing:.06em;cursor:pointer;border:1px solid;transition:all .2s}
+  .unit-btn.add{background:rgba(201,162,39,.1);border-color:var(--gold-dim);color:var(--gold)}
+  .unit-btn.add:active{background:rgba(201,162,39,.2)}
+  .unit-btn.remove{background:rgba(201,74,26,.1);border-color:var(--ember);color:var(--ember-glow)}
+  .unit-btn.remove:active{background:rgba(201,74,26,.2)}
+  .unit-unique-badge{font-size:10px;color:var(--muted);font-style:italic}
+
+  /* WARBAND */
+  .warband-empty{padding:60px 24px;text-align:center;color:var(--muted)}
+  .warband-empty .we-icon{font-size:48px;margin-bottom:16px;opacity:.5}
+  .warband-empty .we-title{font-family:'Cinzel',serif;font-size:16px;color:var(--faint);margin-bottom:8px}
+  .warband-empty .we-sub{font-size:14px;font-style:italic}
+  .warband-summary{margin:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:0;flex-shrink:0}
+  .ws-stat{flex:1;text-align:center;padding:0 10px;border-right:1px solid var(--border)}
+  .ws-stat:last-child{border-right:none}
+  .ws-val{font-family:'Share Tech Mono',monospace;font-size:18px;color:var(--gold);display:block;margin-bottom:3px}
+  .ws-key{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+  .roster-item{margin:0 18px 8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px}
+  .ri-info{flex:1}
+  .ri-name{font-family:'Cinzel',serif;font-size:13px;font-weight:600;margin-bottom:2px}
+  .ri-faction{font-size:11px;color:var(--muted);font-style:italic}
+  .ri-cost{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--gold);margin-right:8px;flex-shrink:0}
+  .ri-remove{width:28px;height:28px;background:rgba(201,74,26,.1);border:1px solid rgba(201,74,26,.3);border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--ember-glow);transition:background .2s;flex-shrink:0}
+  .ri-remove:active{background:rgba(201,74,26,.25)}
+  .order-btn{margin:0 18px 10px;padding:16px;background:linear-gradient(135deg,var(--ember) 0%,#a03515 100%);border:1px solid var(--ember-glow);border-radius:10px;text-align:center;font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:.1em;color:white;cursor:pointer;box-shadow:0 4px 20px rgba(201,74,26,.3);transition:transform .15s;flex-shrink:0;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+  .order-btn:active{transform:scale(.98)}
+  .order-btn.disabled{background:var(--surface2);border-color:var(--border);color:var(--muted);box-shadow:none;cursor:not-allowed}
+  .start-game-btn{margin:0 18px 10px;padding:14px;background:linear-gradient(135deg,#1a3a6b 0%,#0f2040 100%);border:1px solid rgba(74,122,181,.5);border-radius:10px;text-align:center;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:.1em;color:#8abdd5;cursor:pointer;transition:transform .15s;flex-shrink:0}
+  .start-game-btn:active{transform:scale(.98)}
+  .start-game-btn.disabled{background:var(--surface2);border-color:var(--border);color:var(--muted);cursor:not-allowed}
+
+  /* ORDER */
+  .order-hero{padding:24px 18px 18px;text-align:center;flex-shrink:0}
+  .order-icon{font-size:48px;margin-bottom:12px}
+  .order-title{font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:var(--gold);margin-bottom:6px;letter-spacing:.08em}
+  .order-sub{font-size:14px;color:var(--muted);font-style:italic}
+  .order-items{margin:0 18px}
+  .order-item{display:flex;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);gap:12px}
+  .order-item:last-child{border-bottom:none}
+  .oi-thumb{width:44px;height:44px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+  .oi-name{flex:1;font-family:'Cinzel',serif;font-size:13px;font-weight:600}
+  .oi-sub{font-size:11px;color:var(--muted);margin-top:2px}
+  .oi-price{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--gold);flex-shrink:0}
+  .order-total-box{margin:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;flex-shrink:0}
+  .otb-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted)}
+  .otb-row.total{color:var(--text);font-family:'Cinzel',serif;font-size:15px;font-weight:700;border-top:1px solid var(--border);margin-top:8px;padding-top:10px}
+  .otb-val{font-family:'Share Tech Mono',monospace}
+  .otb-row.total .otb-val{color:var(--gold)}
+  .shopify-btn{margin:0 18px 12px;padding:16px;background:linear-gradient(135deg,#5c6ac4 0%,#404aa3 100%);border:1px solid #7b85d4;border-radius:10px;text-align:center;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:.08em;color:white;cursor:pointer;box-shadow:0 4px 20px rgba(92,106,196,.3);transition:transform .15s;flex-shrink:0;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+  .shopify-btn:active{transform:scale(.98)}
+  .shopify-note{text-align:center;font-size:11px;color:var(--muted);padding:0 18px 14px;font-style:italic;flex-shrink:0}
+
+  /* RULES */
+  .stat-ref{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px}
+  .stat-ref-row{display:flex;padding:9px 12px;border-bottom:1px solid var(--border);gap:10px;align-items:flex-start}
+  .stat-ref-row:last-child{border-bottom:none}
+  .srr-key{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--gold);width:28px;flex-shrink:0;margin-top:1px}
+  .srr-name{font-family:'Cinzel',serif;font-size:12px;font-weight:600;width:90px;flex-shrink:0;color:var(--text)}
+  .srr-desc{font-size:12px;color:var(--muted);line-height:1.4;flex:1}
+  .game-mode-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+  .gmc-title{font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .gmc-desc{font-size:13px;color:var(--muted);line-height:1.5;font-style:italic}
+
+  /* GAME SCREEN */
+  .dice-bar{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+  .dice-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 10px 10px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+  .dice-btn:active{background:var(--faint)}
+  .dice-btn.rolled{border-color:var(--gold-dim)}
+  .dice-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.12em;color:var(--muted);margin-bottom:6px}
+  .dice-result{font-family:'Share Tech Mono',monospace;font-size:28px;color:var(--gold);line-height:1;min-height:34px;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+  .dice-result.rolling{transform:scale(1.3);color:var(--ember-glow)}
+  .dice-sub{font-size:10px;color:var(--muted);margin-top:3px}
+  .turn-badge{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:5px;transition:border-color .2s}
+  .turn-badge:active{border-color:var(--gold-dim)}
+  .turn-num{color:var(--gold);font-size:14px}
+  .game-unit-card{margin:0 18px 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);overflow:hidden;transition:opacity .3s,border-color .3s}
+  .game-unit-card.wounded{border-color:rgba(201,74,26,.4)}
+  .game-unit-card.fallen{opacity:.45;border-color:var(--faint)}
+  .game-unit-header{display:flex;align-items:center;padding:12px 14px 10px;gap:10px}
+  .game-unit-icon{font-size:26px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+  .fallen-skull{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(9,8,12,.7);border-radius:6px}
+  .game-unit-info{flex:1}
+  .game-unit-name{font-family:'Cinzel',serif;font-size:13px;font-weight:600;letter-spacing:.04em;margin-bottom:2px}
+  .game-unit-meta{font-size:11px;color:var(--muted);font-style:italic}
+  .fallen-badge{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);background:var(--faint);padding:3px 8px;border-radius:10px;letter-spacing:.06em}
+  .alive-badge{font-family:'Share Tech Mono',monospace;font-size:10px;color:#3acc80;background:rgba(42,170,106,.1);border:1px solid rgba(42,170,106,.2);padding:3px 8px;border-radius:10px;letter-spacing:.04em}
+  .game-unit-stats{padding:0 14px 12px;display:flex;flex-direction:column;gap:8px}
+  .tracker-row{display:flex;align-items:center;gap:10px}
+  .tracker-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:var(--muted);width:60px;flex-shrink:0}
+  .pip-row{display:flex;gap:6px;flex:1;align-items:center}
+  .wound-pip{width:22px;height:22px;border-radius:50%;border:2px solid;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .wound-pip.full{background:rgba(201,74,26,.7);border-color:var(--ember-glow)}
+  .wound-pip.full:active{transform:scale(.85)}
+  .wound-pip.empty{background:transparent;border-color:var(--faint)}
+  .wound-pip.empty:active{border-color:var(--ember)}
+  .destiny-pip{width:20px;height:20px;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);cursor:pointer;transition:all .15s;flex-shrink:0}
+  .destiny-pip.full{background:var(--gold)}
+  .destiny-pip.full:active{transform:scale(.8)}
+  .destiny-pip.empty{background:var(--faint)}
+  .nerve-btn{margin-left:auto;padding:4px 10px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:.06em;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:border-color .2s,color .2s;white-space:nowrap}
+  .nerve-btn:active{border-color:var(--gold-dim);color:var(--gold)}
+  .nerve-result{font-family:'Share Tech Mono',monospace;font-size:11px;padding:3px 8px;border-radius:6px;margin-left:auto}
+  .nerve-result.pass{background:rgba(42,170,106,.15);color:#3acc80;border:1px solid rgba(42,170,106,.3)}
+  .nerve-result.fail{background:rgba(201,74,26,.15);color:var(--ember-glow);border:1px solid rgba(201,74,26,.3)}
+  .game-reset-btn{margin:4px 18px 12px;padding:13px;background:transparent;border:1px solid var(--border);border-radius:10px;text-align:center;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.1em;color:var(--muted);cursor:pointer;transition:border-color .2s,color .2s;flex-shrink:0}
+  .game-reset-btn:active{border-color:var(--ember);color:var(--ember-glow)}
+
+  /* TOAST */
+  #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--gold-dim);color:var(--gold);font-family:'Cinzel',serif;font-size:12px;letter-spacing:.06em;padding:10px 18px;border-radius:20px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:100;white-space:nowrap}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div class="scroll-area">
+      <div class="home-hero">
+        <div class="crest">⚔️</div>
+        <div class="home-logo">HALGRAD</div>
+        <div class="home-sub">Vanguard</div>
+        <div class="home-divider"></div>
+        <div class="home-tagline">The eternal city awaits. Build your warband. Order your prints. Enter the ruins.</div>
+      </div>
+      <div class="home-cta" onclick="gotoScreen('factions')">⚔ BUILD YOUR WARBAND</div>
+      <div class="home-quick">
+        <div class="quick-card" onclick="gotoScreen('warband')"><div class="qc-icon">🛡️</div><div class="qc-label">My Roster</div><div class="qc-desc">View and manage your current warband</div></div>
+        <div class="quick-card" onclick="gotoScreen('rules')"><div class="qc-icon">📖</div><div class="qc-label">Quick Rules</div><div class="qc-desc">Stats reference &amp; game modes</div></div>
+        <div class="quick-card" onclick="showToast('Shop coming soon!')"><div class="qc-icon">🏪</div><div class="qc-label">Shop</div><div class="qc-desc">Browse all Ironclad Forge prints</div></div>
+        <div class="quick-card" onclick="showToast('Community launching with full release!')"><div class="qc-icon">🔥</div><div class="qc-label">Community</div><div class="qc-desc">Galleries, guides &amp; painted minis</div></div>
+      </div>
+      <div class="lore-pill">"There was once a time that when people spoke of 'the city', they could only have meant Halgrad. A monument to mortal ambition — and its fall."</div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item active"><div class="nav-icon">🏰</div>Home</div>
+      <div class="nav-item" onclick="gotoScreen('factions')"><div class="nav-icon">⚔️</div>Factions</div>
+      <div class="nav-item" onclick="gotoScreen('warband')"><div class="nav-icon">🛡️</div>Warband</div>
+      <div class="nav-item" onclick="gotoScreen('rules')"><div class="nav-icon">📖</div>Rules</div>
+    </div>
+  </div>
+
+  <!-- FACTIONS -->
+  <div class="screen" id="screen-factions">
+    <div class="topbar"><div class="topbar-back" onclick="gotoScreen('home')">←</div><div class="topbar-title">Choose Your Faction</div></div>
+    <div class="scroll-area">
+      <div class="section-header">Six factions vie for control of the eternal city</div>
+      <div class="faction-card f-marocia" onclick="selectFaction('marocia')">
+        <div class="faction-card-inner"><div class="faction-icon">🦅</div><div class="faction-info"><div class="faction-name">Kingdom of Marocia</div><div class="faction-tagline">Disciplined soldiers of a proud feudal kingdom — versatile infantry with strong synergy</div><div class="faction-tags"><span class="faction-tag">VERSATILE</span><span class="faction-tag">BRAVE</span><span class="faction-tag">SYNERGY</span></div></div><div class="faction-arrow">›</div></div>
+        <div class="faction-org"><span>⚔ Limit <b>15</b></span><span>💰 Start <b>100GP</b></span><span>🔗 Merc slots <b>2</b></span></div>
+      </div>
+      <div class="faction-card f-northmen" onclick="selectFaction('northmen')">
+        <div class="faction-card-inner"><div class="faction-icon">🪓</div><div class="faction-info"><div class="faction-name">The Northmen</div><div class="faction-tagline">Feared raiders from beyond the Sea of Wyrms — resistant to Fear, bonuses to looting</div><div class="faction-tags"><span class="faction-tag">RELIABLE</span><span class="faction-tag">FEAR RESIST</span><span class="faction-tag">LOOT</span></div></div><div class="faction-arrow">›</div></div>
+        <div class="faction-org"><span>⚔ Limit <b>15</b></span><span>💰 Start <b>100GP</b></span><span>🔗 Merc slots <b>3</b></span></div>
+      </div>
+      <div class="faction-card f-vohldramar" onclick="selectFaction('vohldramar')">
+        <div class="faction-card-inner"><div class="faction-icon">⚜️</div><div class="faction-info"><div class="faction-name">Vohldramar</div><div class="faction-tagline">Gold Elves of the Hidden Hall — ancient, elite warriors without fear or equal</div><div class="faction-tags"><span class="faction-tag">ELITE</span><span class="faction-tag">DURABLE</span><span class="faction-tag">RANGED</span></div></div><div class="faction-arrow">›</div></div>
+        <div class="faction-org"><span>⚔ Limit <b>10</b></span><span>💰 Start <b>80GP</b></span><span>🔗 Merc slots <b>0</b></span></div>
+      </div>
+      <div class="faction-card f-grynvok" onclick="selectFaction('grynvok')">
+        <div class="faction-card-inner"><div class="faction-icon">🔥</div><div class="faction-info"><div class="faction-name">Grynvok Pyreborn</div><div class="faction-tagline">Orcs reforged in demonic fire — multiple wounds, resistant to magic, bound by the Malefic Honour</div><div class="faction-tags"><span class="faction-tag">MULTI-WOUND</span><span class="faction-tag">MAGIC RESIST</span><span class="faction-tag">DUELLISTS</span></div></div><div class="faction-arrow">›</div></div>
+        <div class="faction-org"><span>⚔ Limit <b>10</b></span><span>💰 Start <b>90GP</b></span><span>🔗 Merc slots <b>1</b></span></div>
+      </div>
+      <div class="faction-card f-deep" onclick="selectFaction('deep')">
+        <div class="faction-card-inner"><div class="faction-icon">👺</div><div class="faction-info"><div class="faction-name">The Deep Dwellers</div><div class="faction-tagline">Goblin tribes from beneath the Guildsport — swarms of vicious fighters with a Depth Troll</div><div class="faction-tags"><span class="faction-tag">NUMBERS</span><span class="faction-tag">HORDE TACTICS</span><span class="faction-tag">TROLL</span></div></div><div class="faction-arrow">›</div></div>
+        <div class="faction-org"><span>⚔ Limit <b>15</b></span><span>💰 Start <b>120GP</b></span><span>🔗 Merc slots <b>1</b></span></div>
+      </div>
+      <div class="faction-card f-mercenaries" onclick="selectFaction('mercenaries')">
+        <div class="faction-card-inner"><div class="faction-icon">💰</div><div class="faction-info"><div class="faction-name">Mercenaries</div><div class="faction-tagline">Sellswords and broken men — huge range of units, no faction synergy, better post-battle gold</div><div class="faction-tags"><span class="faction-tag">VERSATILE</span><span class="faction-tag">CHARACTERS</span><span class="faction-tag">GOLD</span></div></div><div class="faction-arrow">›</div></div>
+        <div class="faction-org"><span>⚔ Limit <b>12</b></span><span>💰 Start <b>120GP</b></span><span>🔗 All mercs</span></div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="gotoScreen('home')"><div class="nav-icon">🏰</div>Home</div>
+      <div class="nav-item active"><div class="nav-icon">⚔️</div>Factions</div>
+      <div class="nav-item" onclick="gotoScreen('warband')"><div class="nav-icon">🛡️</div>Warband</div>
+      <div class="nav-item" onclick="gotoScreen('rules')"><div class="nav-icon">📖</div>Rules</div>
+    </div>
+  </div>
+
+  <!-- UNITS -->
+  <div class="screen" id="screen-units">
+    <div class="topbar"><div class="topbar-back" onclick="gotoScreen('factions')">←</div><div class="topbar-title" id="units-title">Units</div><div class="topbar-badge" id="units-badge">0 gp</div></div>
+    <div class="faction-banner" id="faction-banner">
+      <div class="faction-banner-icon" id="banner-icon">⚔️</div>
+      <div><div class="faction-banner-name" id="banner-name">Faction</div><div class="faction-banner-sub" id="banner-sub">Select units for your warband</div></div>
+    </div>
+    <div class="faction-bonus-pill" id="faction-bonus-pill"></div>
+    <div class="scroll-area" id="units-list"></div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="gotoScreen('home')"><div class="nav-icon">🏰</div>Home</div>
+      <div class="nav-item active"><div class="nav-icon">⚔️</div>Factions</div>
+      <div class="nav-item" onclick="gotoScreen('warband')"><div class="nav-icon">🛡️</div>Warband</div>
+      <div class="nav-item" onclick="gotoScreen('rules')"><div class="nav-icon">📖</div>Rules</div>
+    </div>
+  </div>
+
+  <!-- WARBAND -->
+  <div class="screen" id="screen-warband">
+    <div class="topbar"><div class="topbar-back" onclick="gotoScreen('home')">←</div><div class="topbar-title">My Warband</div><div class="topbar-badge" id="warband-badge">0 gp</div></div>
+    <div id="warband-content" class="scroll-area"></div>
+    <div id="order-btn-wrap">
+      <div class="start-game-btn disabled" id="start-game-btn" onclick="tryStartGame()">⚔ START GAME</div>
+      <div class="order-btn disabled" id="order-btn" onclick="tryOrder()">⚒ ORDER WARBAND PRINTS</div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="gotoScreen('home')"><div class="nav-icon">🏰</div>Home</div>
+      <div class="nav-item" onclick="gotoScreen('factions')"><div class="nav-icon">⚔️</div>Factions</div>
+      <div class="nav-item active"><div class="nav-icon">🛡️</div>Warband</div>
+      <div class="nav-item" onclick="gotoScreen('rules')"><div class="nav-icon">📖</div>Rules</div>
+    </div>
+  </div>
+
+  <!-- ORDER -->
+  <div class="screen" id="screen-order">
+    <div class="topbar"><div class="topbar-back" onclick="gotoScreen('warband')">←</div><div class="topbar-title">Order Summary</div></div>
+    <div class="scroll-area">
+      <div class="order-hero"><div class="order-icon">📦</div><div class="order-title">Warband Order</div><div class="order-sub">Premium resin prints — shipped from Ironclad Forge, UK</div></div>
+      <div class="order-items" id="order-items"></div>
+      <div class="order-total-box" id="order-total"></div>
+      <div class="shopify-btn" onclick="showToast('Redirecting to Ironclad Forge checkout...')">🛒 CHECKOUT VIA IRONCLAD FORGE</div>
+      <div class="shopify-note">Secure checkout powered by Shopify. Free UK shipping on all orders.</div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="gotoScreen('home')"><div class="nav-icon">🏰</div>Home</div>
+      <div class="nav-item" onclick="gotoScreen('factions')"><div class="nav-icon">⚔️</div>Factions</div>
+      <div class="nav-item" onclick="gotoScreen('warband')"><div class="nav-icon">🛡️</div>Warband</div>
+      <div class="nav-item" onclick="gotoScreen('rules')"><div class="nav-icon">📖</div>Rules</div>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="screen" id="screen-rules">
+    <div class="topbar"><div class="topbar-back" onclick="gotoScreen('home')">←</div><div class="topbar-title">Quick Reference</div></div>
+    <div class="scroll-area">
+      <div class="section-header">Game Modes</div>
+      <div style="margin:0 18px 16px">
+        <div class="game-mode-card"><div class="gmc-title">⚔️ Match Play</div><div class="gmc-desc">Two or more players build warbands and face off in the ruins of Halgrad. Games last up to 10 turns.</div></div>
+        <div class="game-mode-card"><div class="gmc-title">🧟 Single Player</div><div class="gmc-desc">Pit your warband against the city's Dark Denizens in dungeon crawler-style scenarios. Play alone, any time.</div></div>
+        <div class="game-mode-card"><div class="gmc-title">📜 Quest Play</div><div class="gmc-desc">Campaign mode. Face dangerous quests that shape the city. Earn XP, take injuries, find loot.</div></div>
+      </div>
+      <div class="section-header">Stat Reference</div>
+      <div style="margin:0 18px 16px">
+        <div class="stat-ref">
+          <div class="stat-ref-row"><div class="srr-key">Sp</div><div class="srr-name">Speed</div><div class="srr-desc">Move in inches per turn. +2" when Charging.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">Me</div><div class="srr-name">Melee</div><div class="srr-desc">Close combat modifier (−3 to +3).</div></div>
+          <div class="stat-ref-row"><div class="srr-key">Ra</div><div class="srr-name">Ranged</div><div class="srr-desc">Ranged weapon target roll (3+ to 10+).</div></div>
+          <div class="stat-ref-row"><div class="srr-key">S</div><div class="srr-name">Strength</div><div class="srr-desc">Hitting power (range 1–10).</div></div>
+          <div class="stat-ref-row"><div class="srr-key">R</div><div class="srr-name">Resilience</div><div class="srr-desc">Resistance to injury (e.g. 4+).</div></div>
+          <div class="stat-ref-row"><div class="srr-key">A</div><div class="srr-name">Attacks</div><div class="srr-desc">Dice rolled in close combat (max 3 baseline).</div></div>
+          <div class="stat-ref-row"><div class="srr-key">W</div><div class="srr-name">Wounds</div><div class="srr-desc">Times wounded before removal (max 10, min 1).</div></div>
+          <div class="stat-ref-row"><div class="srr-key">Nv</div><div class="srr-name">Nerve</div><div class="srr-desc">Bravery. Nerve Test = D10 + Nv. Need 10+ to pass.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">Ds</div><div class="srr-name">Destiny</div><div class="srr-desc">Characters only. Spend to alter rolls or use Destined Deeds.</div></div>
+        </div>
+      </div>
+      <div class="section-header">Nerve Tests</div>
+      <div style="margin:0 18px 16px">
+        <div class="stat-ref">
+          <div class="stat-ref-row"><div class="srr-key">Roll</div><div class="srr-name">Formula</div><div class="srr-desc">D10 + Nerve Value. Result 10+ = Pass. Below 10 = Fail.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">−1</div><div class="srr-name">Shaken</div><div class="srr-desc">Failed by 1 point: half move only, cannot Shoot, Charge or hold Objectives.</div></div>
+          <div class="stat-ref-row"><div class="srr-key">−2+</div><div class="srr-name">Flees</div><div class="srr-desc">Failed by 2+ points: unit flees the field, removed from play.</div></div>
+        </div>
+      </div>
+      <div class="section-header">Dice</div>
+      <div style="margin:0 18px 16px">
+        <div class="stat-ref">
+          <div class="stat-ref-row"><div class="srr-key">D10</div><div class="srr-name">Ten-sided</div><div class="srr-desc">Primary dice. Roll at face value (1–10).</div></div>
+          <div class="stat-ref-row"><div class="srr-key">D5</div><div class="srr-name">Half a D10</div><div class="srr-desc">Roll D10, halve and round up. 1-2=1, 3-4=2, 5-6=3, 7-8=4, 9-10=5.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="gotoScreen('home')"><div class="nav-icon">🏰</div>Home</div>
+      <div class="nav-item" onclick="gotoScreen('factions')"><div class="nav-icon">⚔️</div>Factions</div>
+      <div class="nav-item" onclick="gotoScreen('warband')"><div class="nav-icon">🛡️</div>Warband</div>
+      <div class="nav-item active"><div class="nav-icon">📖</div>Rules</div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div class="screen" id="screen-game">
+    <div class="topbar"><div class="topbar-back" onclick="gotoScreen('warband')">←</div><div class="topbar-title">⚔ Game Tracker</div><div class="turn-badge" onclick="nextTurn()">Turn <span class="turn-num" id="turn-num">1</span> +</div></div>
+    <div class="dice-bar">
+      <div class="dice-btn" id="d10-btn" onclick="rollDice(10)"><div class="dice-label">D10 — TAP TO ROLL</div><div class="dice-result" id="d10-result">—</div><div class="dice-sub" id="d10-sub">ten-sided</div></div>
+      <div class="dice-btn" id="d5-btn" onclick="rollDice(5)"><div class="dice-label">D5 — TAP TO ROLL</div><div class="dice-result" id="d5-result">—</div><div class="dice-sub" id="d5-sub">half D10, round up</div></div>
+    </div>
+    <div class="scroll-area" id="game-units-list"></div>
+    <div class="game-reset-btn" onclick="confirmReset()">↺ RESET GAME</div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="gotoScreen('home')"><div class="nav-icon">🏰</div>Home</div>
+      <div class="nav-item" onclick="gotoScreen('factions')"><div class="nav-icon">⚔️</div>Factions</div>
+      <div class="nav-item" onclick="gotoScreen('warband')"><div class="nav-icon">🛡️</div>Warband</div>
+      <div class="nav-item" onclick="gotoScreen('rules')"><div class="nav-icon">📖</div>Rules</div>
+    </div>
+  </div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+// ─── DATA (all stats from Halgrad Vanguard rulebook) ─────────────
+const FACTIONS = {
+  marocia: {
+    name:'Kingdom of Marocia', icon:'🦅', color:'#6a9fc0',
+    sub:'Disciplined soldiers of a proud feudal kingdom',
+    startingGold:100, warbandLimit:15, mercenarySlots:2,
+    bonus:'Marocian Leaders gain +1 Nv and Rank and File. Friendly Marocian Warriors within 4" of the Leader may re-roll failed Nerve Tests.',
+    units:[
+      {id:'mar1',name:'Marocian Man At Arms',keywords:'Marocia · Human · Infantry · Warrior · 25mm',gp:10,price:8.99,icon:'⚔️',maxCount:null,
+       stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'+0',R:'6+',A:'1',W:'1',Nv:'5',Ds:'—'},
+       equipment:'Armour; Sword or Axe',
+       rules:['Rank and File: +1 R and Nv when in base contact with another unit with this rule']},
+      {id:'mar2',name:'Marocian Lancer',keywords:'Marocia · Human · Cavalry · Warrior · 25mm',gp:18,price:11.99,icon:'🗡️',maxCount:null,
+       stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'+0',R:'6+',A:'1',W:'1',Nv:'5',Ds:'—'},
+       equipment:'Armour; Sword or Axe; Lance; Horse',
+       rules:['Rank and File: +1 R and Nv when in base contact with another unit with this rule']},
+      {id:'mar3',name:'Great War Veteran',keywords:'Marocia · Human · Infantry · Warrior · 25mm',gp:12,price:9.99,icon:'🛡️',maxCount:null,
+       stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'+0',R:'6+',A:'1',W:'1',Nv:'6',Ds:'—'},
+       equipment:'Armour; Any Hand Weapon',
+       rules:['Hatred (Northmen)','Tenacious: +1 Me when within 4" of an Objective or Point of Interest']}
+    ]
+  },
+  northmen: {
+    name:'The Northmen', icon:'🪓', color:'#8abdd5',
+    sub:'Feared raiders from beyond the Sea of Wyrms',
+    startingGold:100, warbandLimit:15, mercenarySlots:3,
+    bonus:'Leaders gain Elite vs Beast, Character and Monster units. Warriors re-roll failed Nerve Checks when charging Fear/Horror enemies. All units gain +1 to Search Rolls.',
+    units:[
+      {id:'nor1',name:'Northman Raider',keywords:'Northmen · Human · Infantry · Warrior · 25mm',gp:9,price:7.99,icon:'🪓',maxCount:null,
+       stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'+0',R:'5+',A:'1',W:'1',Nv:'5',Ds:'—'},
+       equipment:'Light Armour; Sword or Axe',
+       rules:['Skilled Raiders: When tying a Battle Roll vs a unit with equal Melee, this unit wins the Fight']},
+      {id:'nor2',name:'Awakynd',keywords:'Northmen · Spirit · Infantry · Warrior · 32mm',gp:22,price:13.99,icon:'👻',maxCount:null,
+       stats:{Sp:'5"',Me:'+1',Ra:'7+',S:'+0',R:'—',A:'2',W:'2',Nv:'6',Ds:'—'},
+       equipment:'Heavy Armour; Sword or Axe',
+       rules:['Hardy (9+)','Elite']},
+      {id:'nor3',name:'Northman Huscarl',keywords:'Northmen · Human · Infantry · Warrior · 25mm',gp:14,price:10.99,icon:'🛡️',maxCount:null,
+       stats:{Sp:'6"',Me:'+1',Ra:'6+',S:'+0',R:'5+',A:'1',W:'1',Nv:'6',Ds:'—'},
+       equipment:'Light Armour; Sword or Axe; Huscarl Cloak',
+       rules:['Loyal to the Chieftains: Gains Elite when within 6" and Line of Sight of a Friendly Leader','Huscarl Cloak: +1 R vs non-magical Ranged Attacks (Small Item)']},
+      {id:'nor4',name:'Northman Scout',keywords:'Northmen · Human · Cavalry · Warrior · 25mm',gp:16,price:11.99,icon:'🏹',maxCount:null,
+       stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'+0',R:'5+',A:'1',W:'1',Nv:'5',Ds:'—'},
+       equipment:'Light Armour; Sword or Axe; Horse',
+       rules:[]}
+    ]
+  },
+  vohldramar: {
+    name:'Vohldramar', icon:'⚜️', color:'#c8a84b',
+    sub:'Gold Elves of the Hidden Hall — ancient, elite, without fear',
+    startingGold:80, warbandLimit:10, mercenarySlots:0,
+    bonus:'Leaders gain +1 S and the Hardy (8+) Destined Deed. When Warrior Units are targeted by attacks with S +0 or lower, they count their Resilience as 1 higher.',
+    units:[
+      {id:'voh1',name:'Gold Elf Warrior',keywords:'Vohldramar · Gold Elf · Infantry · Warrior · 25mm',gp:19,price:13.99,icon:'⚜️',maxCount:null,
+       stats:{Sp:'7"',Me:'+1',Ra:'5+',S:'+1',R:'6+',A:'2',W:'1',Nv:'7',Ds:'—'},
+       equipment:'Armour; Elven Warblade',
+       rules:['Parry (8+)','Elven Warblade: A Sword usable one or two-handed. Two-handed grants +1 Strength']},
+      {id:'voh2',name:'Gold Elf Chevalier',keywords:'Vohldramar · Gold Elf · Cavalry · Warrior · 25mm',gp:29,price:17.99,icon:'🏇',maxCount:null,
+       stats:{Sp:'7"',Me:'+1',Ra:'5+',S:'+1',R:'6+',A:'2',W:'1',Nv:'7',Ds:'—'},
+       equipment:'Armour; Elven Warblade; Armoured Warhorse',
+       rules:['Parry (8+)']},
+      {id:'voh3',name:'Gold Elf Arquihun',keywords:'Vohldramar · Gold Elf · Infantry · Warrior · 25mm',gp:30,price:18.99,icon:'🔱',maxCount:null,
+       stats:{Sp:'6"',Me:'+2',Ra:'5+',S:'+1',R:'7+',A:'2',W:'2',Nv:'7',Ds:'—'},
+       equipment:'Heavy Armour; Sword; Arquihun Longspear',
+       rules:['Parry (8+)','Arquihun Longspear: Silver Pike — grants +1 to Strike in Fight Phase']}
+    ]
+  },
+  grynvok: {
+    name:'Grynvok Pyreborn', icon:'🔥', color:'#d4741a',
+    sub:'Orcs reforged in demonic fire, bound by the Malefic Honour',
+    startingGold:90, warbandLimit:10, mercenarySlots:1,
+    bonus:'Leaders gain +1 W, −1 Sp and Malefic Honour. Units gain Resistant to Magic when targeted by spells cast from more than 6" away.',
+    units:[
+      {id:'gry1',name:'Grynvok Warrior',keywords:'Grynvok Pyreborn · Orc · Grynvok · Infantry · Warrior · 25mm',gp:17,price:11.99,icon:'⚔️',maxCount:null,
+       stats:{Sp:'5"',Me:'+0',Ra:'6+',S:'+1',R:'6+',A:'1',W:'2',Nv:'5',Ds:'—'},
+       equipment:'Armour; Sword, Axe or Mace',
+       rules:['Hardy (9+)','Malefic Honour: +1 Me for the duration of any Fight involving no other Warband members','Silver Burns: Loses Hardy Special Rule for the duration of any turn wounded by a Silver Weapon']},
+      {id:'gry2',name:'Grynvok Oathsworn',keywords:'Grynvok Pyreborn · Orc · Grynvok · Infantry · Warrior · 25mm',gp:23,price:14.99,icon:'🗡️',maxCount:null,
+       stats:{Sp:'5"',Me:'+1',Ra:'6+',S:'+1',R:'6+',A:'2',W:'2',Nv:'5',Ds:'—'},
+       equipment:'Armour; Glaive and Sword',
+       rules:['Hardy (8+)','Malefic Honour: +1 Me for the duration of any Fight involving no other Warband members','Infernal Resolve: Select one enemy unit at battle start — Fearless while that unit is on the battlefield','Silver Burns: Loses Hardy when wounded by Silver that turn']},
+      {id:'gry3',name:'Grynvok Shadebrand',keywords:'Grynvok Pyreborn · Orc · Grynvok · Infantry · Warrior · 25mm',gp:16,price:10.99,icon:'🕵️',maxCount:null,
+       stats:{Sp:'5"',Me:'+0',Ra:'6+',S:'+1',R:'5+',A:'1',W:'2',Nv:'4',Ds:'—'},
+       equipment:'Light Armour; Sword or Mace',
+       rules:['Hardy (9+)','Mountain Creature','Hatred (Demons)','Stalker','Silver Burns: Loses Hardy when wounded by Silver that turn']}
+    ]
+  },
+  deep: {
+    name:'The Deep Dwellers', icon:'👺', color:'#3acc80',
+    sub:'Goblin tribes flooding up from beneath the Guildsport',
+    startingGold:120, warbandLimit:15, mercenarySlots:1,
+    bonus:'When the Warband Leader takes a Wound, the controlling player may roll D10. On a 6+ the Wound is allocated to a Friendly Goblin within 2" instead. Cannot be saved.',
+    units:[
+      {id:'dee1',name:'Goblin Tribal',keywords:'Deep Dwellers · Goblin · Infantry · Warrior · 25mm',gp:7,price:5.99,icon:'👺',maxCount:null,
+       stats:{Sp:'5"',Me:'−1',Ra:'7+',S:'+0',R:'5+',A:'1',W:'1',Nv:'4',Ds:'—'},
+       equipment:'Light Armour; Improvised Hand Weapon',
+       rules:['Mountain Dweller','Horde Tactics: May fight "over" allied units exactly as if armed with a Spear, but can be targeted for Strikes as if in base contact']},
+      {id:'dee2',name:'Goblin Trapper',keywords:'Deep Dwellers · Goblin · Infantry · Warrior · 25mm',gp:8,price:6.99,icon:'🪤',maxCount:null,
+       stats:{Sp:'5"',Me:'−1',Ra:'6+',S:'+0',R:'5+',A:'1',W:'1',Nv:'4',Ds:'—'},
+       equipment:'Light Armour; Improvised Hand Weapon; Sling',
+       rules:['Mountain Dweller','Horde Tactics (see Goblin Tribal)']},
+      {id:'dee3',name:'Goblin Berserker',keywords:'Deep Dwellers · Goblin · Infantry · Warrior · 25mm',gp:12,price:8.99,icon:'💢',maxCount:null,
+       stats:{Sp:'5"',Me:'+0',Ra:'8+',S:'+0',R:'6+',A:'2',W:'1',Nv:'5',Ds:'—'},
+       equipment:'Armour; Knife and Great Weapon',
+       rules:['Mountain Dweller','Horde Tactics (see Goblin Tribal)','Ferocious: Hardy (8+). When struck but not wounded in Close Combat, attacker suffers a S+0 Hit']},
+      {id:'dee4',name:'Depth Troll',keywords:'Deep Dwellers · Troll · Monster · Warrior · 40mm',gp:80,price:29.99,icon:'🧌',maxCount:1,
+       stats:{Sp:'6"',Me:'+2',Ra:'7+',S:'+2',R:'6+',A:'3',W:'3',Nv:'4',Ds:'—'},
+       equipment:'Improvised Hand Weapon',
+       rules:['Hardy (8+)','Horrifying','Regenerate (9+)','Crushing Blows','Onslaught (6+)','Aquatic: Treats Water Features as Open Ground','Silver Burns: Loses Hardy and Regenerate when wounded by Silver or Flaming that turn','Monster: Cannot gain Experience, become a Character, or Complete Searches','UNIQUE: Only 1 per Warband']}
+    ]
+  },
+  mercenaries: {
+    name:'Mercenaries', icon:'💰', color:'#b0a080',
+    sub:'Sellswords, bounty hunters and broken men — anything for coin',
+    startingGold:120, warbandLimit:12, mercenarySlots:0,
+    bonus:'All units must be Mercenaries. May be led by Human or Elf (Elf reduces starting funds to 100GP). Earns 1D10×4 GP after battles instead of ×3.',
+    units:[
+      {id:'merc1',name:'Thug',keywords:'Mercenary · Human · Warrior · 25mm',gp:8,price:5.99,icon:'🤜',maxCount:null,
+       stats:{Sp:'6"',Me:'+0',Ra:'7+',S:'0',R:'4+',A:'1',W:'1',Nv:'3',Ds:'—'},
+       equipment:'Improvised Hand Weapon',
+       rules:['Cowardly: −1 to all Nerve Checks when Warband is Routed','Unwashed: Cannot join Elf Warbands or any Warband with an Elf Unit']},
+      {id:'merc2',name:'Hound',keywords:'Mercenary · Dog · Beast · Warrior · 32mm',gp:10,price:7.99,icon:'🐕',maxCount:null,
+       stats:{Sp:'8"',Me:'+0',Ra:'—',S:'+1',R:'4+',A:'1',W:'1',Nv:'4',Ds:'—'},
+       equipment:'Teeth',
+       rules:['Overwhelm: When winning Battle Roll, may forgo all Strikes to take an Opposed Strength Test. Win = target knocked Prone']},
+      {id:'merc3',name:'Henchman',keywords:'Mercenary · Human · Warrior · 25mm',gp:9,price:6.99,icon:'⚔️',maxCount:null,
+       stats:{Sp:'6"',Me:'+0',Ra:'6+',S:'0',R:'5+',A:'1',W:'1',Nv:'4',Ds:'—'},
+       equipment:'Light Armour; Hand Weapon',
+       rules:['Unwashed: Cannot join Elf Warbands or any Warband with an Elf Unit']},
+      {id:'merc4',name:'Poacher',keywords:'Mercenary · Human · Warrior · 25mm',gp:10,price:7.99,icon:'🏹',maxCount:null,
+       stats:{Sp:'6"',Me:'+0',Ra:'5+',S:'0',R:'5+',A:'1',W:'1',Nv:'4',Ds:'—'},
+       equipment:'Light Armour; Sword or Axe; Bow',
+       rules:['Strider','Hunter: +1 to Ranged Strike Rolls against Beast Units']},
+      {id:'merc5',name:'Wandering Elf',keywords:'Mercenary · Elf · Warrior · 25mm',gp:50,price:24.99,icon:'🧝',maxCount:null,
+       stats:{Sp:'7"',Me:'+1',Ra:'4+',S:'+1',R:'4+',A:'2',W:'2',Nv:'7',Ds:'1'},
+       equipment:'Light Armour; Dagger',
+       rules:['Emnity: Will not work with Warbands containing Orcs or Goblins']},
+      {id:'merc6',name:'Ogre Mercenary',keywords:'Mercenary · Ogre · Monster · Infantry · Warrior · 40mm',gp:60,price:29.99,icon:'👹',maxCount:1,
+       stats:{Sp:'6"',Me:'+1',Ra:'7+',S:'+2',R:'6+',A:'3',W:'3',Nv:'5',Ds:'—'},
+       equipment:'Light Armour; Sword or Club',
+       rules:['Fear','Onslaught (7+)','Bully: +1 to Battle Rolls vs a single man-sized or smaller Enemy','The Biggest: Only 1 Ogre Mercenary per Warband']},
+      {id:'merc7',name:'Witchseeker',keywords:'Mercenary · Human · Character · 25mm',gp:35,price:19.99,icon:'🔍',maxCount:null,
+       stats:{Sp:'6"',Me:'+1',Ra:'5+',S:'+0',R:'5+',A:'2',W:'2',Nv:'6',Ds:'1'},
+       equipment:'Light Armour; Sword; Hand Crossbow (range 10")',
+       rules:['Hatred (Magic Users)','Witchseeker: Re-roll one Battle Roll when fighting an Enemy Spellcaster','Null Bolts: Hand Crossbow wounds on Magic Users cause an additional Wound']},
+      {id:'merc8',name:'Hedge Wizard',keywords:'Mercenary · Human · Character · 25mm',gp:35,price:19.99,icon:'🧙',maxCount:null,
+       stats:{Sp:'6"',Me:'+0',Ra:'5+',S:'+0',R:'5+',A:'1',W:'2',Nv:'5',Ds:'1'},
+       equipment:'Light Armour; Staff',
+       rules:['Magic Powers: Sunflare (7+), Blast (6+)']},
+      {id:'merc9',name:'Surface Dwarf Sellaxe',keywords:'Mercenary · Dwarf · Character · 25mm',gp:50,price:24.99,icon:'🪨',maxCount:null,
+       stats:{Sp:'5"',Me:'+1',Ra:'5+',S:'+1',R:'6+',A:'2',W:'2',Nv:'6',Ds:'1'},
+       equipment:'Armour; Axe',
+       rules:['Hatred (Orcs or Goblins)','Oath Made in Iron: Will not Flee while the Hiring Leader is on the board','Emnity: Will not work with Warbands containing Goblins']},
+      {id:'merc10',name:'Madman Guide',keywords:'Mercenary · Human · Warrior · 25mm',gp:25,price:14.99,icon:'🗺️',maxCount:1,
+       stats:{Sp:'6"',Me:'+0',Ra:'7+',S:'0',R:'4+',A:'1',W:'1',Nv:'4',Ds:'—'},
+       equipment:'Improvised Hand Weapon',
+       rules:['Local Knowledge: Select one table quarter at battle start — units treat it as Open Ground and re-roll failed Agility Checks for Traps there','Loner: Only 1 Madman Guide per Warband']}
+    ]
+  }
+};
+
+// ─── STATE ───────────────────────────────────────────────────────
+let warband = []; // { ...unit, instanceId }
+let currentFaction = null;
+let instanceCounter = 0;
+
+// ─── NAV ─────────────────────────────────────────────────────────
+function gotoScreen(id) {
+  const prev = document.querySelector('.screen.active');
+  const next = document.getElementById('screen-' + id);
+  if (!next || prev === next) return;
+  prev.classList.remove('active'); prev.classList.add('exit');
+  setTimeout(() => prev.classList.remove('exit'), 300);
+  next.style.transform = 'translateX(30px)';
+  next.classList.add('active');
+  requestAnimationFrame(() => { next.style.transform = ''; });
+  if (id === 'warband') renderWarband();
+  if (id === 'order') renderOrder();
+}
+
+// ─── FACTION SELECT ──────────────────────────────────────────────
+function selectFaction(key) {
+  currentFaction = key;
+  const f = FACTIONS[key];
+  document.getElementById('units-title').textContent = f.name;
+  document.getElementById('banner-icon').textContent = f.icon;
+  const bn = document.getElementById('banner-name');
+  bn.textContent = f.name; bn.style.color = f.color;
+  document.getElementById('banner-sub').textContent = f.sub;
+  document.getElementById('faction-bonus-pill').innerHTML = '<b>FACTION BONUS</b> ' + f.bonus;
+  renderUnits();
+  gotoScreen('units');
+}
+
+// ─── GOLD & LIMIT HELPERS ────────────────────────────────────────
+function getWarbandGold() { return warband.reduce((s,u) => s + u.gp, 0); }
+function getStartingGold() { return currentFaction ? FACTIONS[currentFaction].startingGold : 200; }
+function getWarbandLimit() { return currentFaction ? FACTIONS[currentFaction].warbandLimit : 15; }
+function countUnit(unitId) { return warband.filter(w => w.id === unitId).length; }
+function updateBadges() {
+  const gp = getWarbandGold();
+  const sg = getStartingGold();
+  document.getElementById('units-badge').textContent = gp + ' / ' + sg + ' gp';
+  document.getElementById('warband-badge').textContent = gp + ' gp';
+}
+
+// ─── RENDER UNITS ────────────────────────────────────────────────
+function renderUnits() {
+  const f = FACTIONS[currentFaction];
+  const list = document.getElementById('units-list');
+  const gp = getWarbandGold();
+  const sg = f.startingGold;
+  const wl = f.warbandLimit;
+  const unitCount = warband.length;
+
+  list.innerHTML = `
+    <div class="gold-limit">
+      <div class="gold-grid">
+        <div class="gold-label">WARBAND GOLD</div>
+        <div class="gold-value">${gp} / ${sg} gp</div>
+        <div class="gold-bar"><div class="gold-bar-fill" style="width:${Math.min(100,(gp/sg)*100)}%"></div></div>
+        <div class="limit-sub">Units: ${unitCount} / ${wl} max</div>
+      </div>
+    </div>`;
+
+  f.units.forEach(unit => {
+    const count = countUnit(unit.id);
+    const inWarband = count > 0;
+    const atUniqueLimit = unit.maxCount !== null && count >= unit.maxCount;
+    const atGoldLimit = gp + unit.gp > sg;
+    const atUnitLimit = unitCount >= wl;
+    const canAdd = !atUniqueLimit && !atGoldLimit && !atUnitLimit;
+
+    const statsHtml = Object.entries(unit.stats).map(([k,v]) =>
+      `<div class="stat-cell"><div class="stat-key">${k}</div><div class="stat-val">${v}</div></div>`
+    ).join('');
+
+    const rulesHtml = unit.rules.length ? unit.rules.map(r => `<div class="unit-rule">${r}</div>`).join('') : '';
+
+    const card = document.createElement('div');
+    card.className = 'unit-card' + (inWarband ? ' in-warband' : '');
+    card.innerHTML = `
+      <div class="unit-header">
+        <div>
+          <div class="unit-name">${unit.icon} ${unit.name}</div>
+          <div class="unit-keywords">${unit.keywords}</div>
+        </div>
+        <div class="unit-cost">${unit.gp} gp</div>
+      </div>
+      <div class="stat-block">${statsHtml}</div>
+      ${unit.equipment ? `<div class="unit-equip"><b>EQUIPMENT</b> ${unit.equipment}</div>` : ''}
+      ${rulesHtml ? `<div class="unit-rules">${rulesHtml}</div>` : ''}
+      <div class="unit-footer">
+        ${inWarband ? `<div class="unit-count">×${count} in warband</div>` : `<div class="unit-unique-badge">${unit.maxCount === 1 ? 'Unique' : ''}</div>`}
+        <div style="display:flex;gap:6px">
+          ${inWarband ? `<div class="unit-btn remove" onclick="removeOneUnit('${unit.id}')">− Remove</div>` : ''}
+          ${canAdd ? `<div class="unit-btn add" onclick="addUnit('${unit.id}')">+ Add</div>` : `<div class="unit-btn add" style="opacity:.4;cursor:not-allowed">+ Add</div>`}
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+
+  updateBadges();
+}
+
+function addUnit(unitId) {
+  const f = FACTIONS[currentFaction];
+  const unit = f.units.find(u => u.id === unitId);
+  if (!unit) return;
+  const gp = getWarbandGold();
+  if (gp + unit.gp > f.startingGold) { showToast('Not enough gold!'); return; }
+  if (warband.length >= f.warbandLimit) { showToast('Warband limit reached!'); return; }
+  if (unit.maxCount !== null && countUnit(unitId) >= unit.maxCount) { showToast('Unique unit — limit reached!'); return; }
+  warband.push({ ...unit, instanceId: ++instanceCounter });
+  showToast(unit.name + ' added!');
+  renderUnits();
+  updateBadges();
+}
+
+function removeOneUnit(unitId) {
+  const idx = warband.findLastIndex ? warband.findLastIndex(w => w.id === unitId) : (() => { for(let i=warband.length-1;i>=0;i--) if(warband[i].id===unitId) return i; return -1; })();
+  if (idx >= 0) { showToast(warband[idx].name + ' removed'); warband.splice(idx, 1); }
+  renderUnits();
+  updateBadges();
+}
+
+// ─── WARBAND SCREEN ──────────────────────────────────────────────
+function renderWarband() {
+  const content = document.getElementById('warband-content');
+  const startBtn = document.getElementById('start-game-btn');
+  const orderBtn = document.getElementById('order-btn');
+  updateBadges();
+
+  if (warband.length === 0) {
+    content.innerHTML = `<div class="warband-empty"><div class="we-icon">🛡️</div><div class="we-title">No units recruited</div><div class="we-sub">Choose a faction and build your warband</div></div>`;
+    startBtn.className = 'start-game-btn disabled';
+    orderBtn.className = 'order-btn disabled';
+    return;
+  }
+
+  const totalGp = getWarbandGold();
+  const totalGbp = warband.reduce((s,u) => s + u.price, 0);
+
+  content.innerHTML = `
+    <div class="warband-summary">
+      <div class="ws-stat"><span class="ws-val">${warband.length}</span><span class="ws-key">Units</span></div>
+      <div class="ws-stat"><span class="ws-val">${totalGp}</span><span class="ws-key">Gold</span></div>
+      <div class="ws-stat"><span class="ws-val">£${totalGbp.toFixed(2)}</span><span class="ws-key">Est. Print</span></div>
+    </div>
+    <div class="section-header">Your Roster</div>
+    ${warband.map(u => `
+      <div class="roster-item">
+        <div style="font-size:22px;flex-shrink:0">${u.icon}</div>
+        <div class="ri-info"><div class="ri-name">${u.name}</div><div class="ri-faction">${u.keywords.split('·')[0].trim()}</div></div>
+        <div class="ri-cost">${u.gp}gp</div>
+        <div class="ri-remove" onclick="removeInstance(${u.instanceId})">✕</div>
+      </div>`).join('')}
+    <div style="height:8px"></div>`;
+
+  startBtn.className = 'start-game-btn';
+  orderBtn.className = 'order-btn';
+}
+
+function removeInstance(instanceId) {
+  const idx = warband.findIndex(w => w.instanceId === instanceId);
+  if (idx >= 0) { showToast(warband[idx].name + ' removed'); warband.splice(idx, 1); }
+  renderWarband();
+  updateBadges();
+}
+
+function tryOrder() { if (warband.length === 0) return; renderOrder(); gotoScreen('order'); }
+
+// ─── ORDER SCREEN ────────────────────────────────────────────────
+function renderOrder() {
+  const subtotal = warband.reduce((s,u) => s + u.price, 0);
+  document.getElementById('order-items').innerHTML = warband.map(u => `
+    <div class="order-item">
+      <div class="oi-thumb">${u.icon}</div>
+      <div><div class="oi-name">${u.name}</div><div class="oi-sub">Premium resin · 32mm scale · supports removed</div></div>
+      <div class="oi-price">£${u.price.toFixed(2)}</div>
+    </div>`).join('');
+  document.getElementById('order-total').innerHTML = `
+    <div class="otb-row"><span>Subtotal</span><span class="otb-val">£${subtotal.toFixed(2)}</span></div>
+    <div class="otb-row"><span>UK Shipping</span><span class="otb-val" style="color:#3acc80">FREE</span></div>
+    <div class="otb-row total"><span>Total</span><span class="otb-val">£${subtotal.toFixed(2)}</span></div>`;
+}
+
+// ─── GAME STATE ──────────────────────────────────────────────────
+let gameState = {};
+let turnCount = 1;
+
+function tryStartGame() { if (warband.length === 0) return; initGame(); gotoScreen('game'); }
+
+function initGame() {
+  turnCount = 1;
+  document.getElementById('turn-num').textContent = '1';
+  gameState = {};
+  warband.forEach(u => {
+    const maxW = parseInt(u.stats.W) || 1;
+    const maxDs = (u.stats.Ds === '—' || u.stats.Ds === '-') ? 0 : parseInt(u.stats.Ds) || 0;
+    gameState[u.instanceId] = { wounds: maxW, maxWounds: maxW, destiny: maxDs, maxDestiny: maxDs, nerveResult: null };
+  });
+  document.getElementById('d10-result').textContent = '—';
+  document.getElementById('d5-result').textContent = '—';
+  document.getElementById('d10-btn').classList.remove('rolled');
+  document.getElementById('d5-btn').classList.remove('rolled');
+  renderGameUnits();
+}
+
+function renderGameUnits() {
+  const list = document.getElementById('game-units-list');
+  list.innerHTML = '<div class="section-header">TAP WOUNDS TO MARK DAMAGE · GEMS TO SPEND DESTINY</div>';
+  warband.forEach(u => {
+    const gs = gameState[u.instanceId];
+    if (!gs) return;
+    const fallen = gs.wounds <= 0;
+    const wounded = gs.wounds > 0 && gs.wounds < gs.maxWounds;
+    const nv = parseInt(u.stats.Nv) || 5;
+
+    const woundPips = Array.from({length:gs.maxWounds},(_,i) => {
+      const full = i < gs.wounds;
+      return `<div class="wound-pip ${full?'full':'empty'}" onclick="toggleWound(${u.instanceId},${i})"></div>`;
+    }).join('');
+
+    const destinyPips = gs.maxDestiny > 0 ? Array.from({length:gs.maxDestiny},(_,i) => {
+      const full = i < gs.destiny;
+      return `<div class="destiny-pip ${full?'full':'empty'}" onclick="toggleDestiny(${u.instanceId},${i})"></div>`;
+    }).join('') : '<span style="font-size:11px;color:var(--muted);font-style:italic">—</span>';
+
+    // Nerve test formula: D10 + Nv >= 10
+    let nerveHtml = '';
+    if (gs.nerveResult === null) {
+      nerveHtml = `<div class="nerve-btn" onclick="rollNerve(${u.instanceId},${nv})">Nv ${nv} Test</div>`;
+    } else {
+      const total = gs.nerveResult + nv;
+      const pass = total >= 10;
+      nerveHtml = `<div class="nerve-result ${pass?'pass':'fail'}" onclick="clearNerve(${u.instanceId})">${pass?'✓ PASS':'✗ FAIL'} (${gs.nerveResult}+${nv}=${total})</div>`;
+    }
+
+    const card = document.createElement('div');
+    card.className = `game-unit-card${fallen?' fallen':wounded?' wounded':''}`;
+    card.innerHTML = `
+      <div class="game-unit-header">
+        <div class="game-unit-icon">${u.icon}${fallen?'<div class="fallen-skull">☠</div>':''}</div>
+        <div class="game-unit-info"><div class="game-unit-name">${u.name}</div><div class="game-unit-meta">${u.keywords.split('·')[0].trim()}</div></div>
+        ${fallen?'<div class="fallen-badge">☠ FALLEN</div>':`<div class="alive-badge">${gs.wounds}/${gs.maxWounds} W</div>`}
+      </div>
+      <div class="game-unit-stats">
+        <div class="tracker-row"><div class="tracker-label">WOUNDS</div><div class="pip-row">${woundPips}</div></div>
+        ${gs.maxDestiny>0?`<div class="tracker-row"><div class="tracker-label">DESTINY</div><div class="pip-row">${destinyPips}</div></div>`:''}
+        <div class="tracker-row"><div class="tracker-label">NERVE</div>${nerveHtml}</div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function toggleWound(iid,pipIdx) {
+  const gs = gameState[iid]; if(!gs) return;
+  gs.wounds = pipIdx < gs.wounds ? pipIdx : pipIdx+1;
+  gs.wounds = Math.max(0,Math.min(gs.maxWounds,gs.wounds));
+  if(gs.wounds===0) showToast('Unit fallen!');
+  renderGameUnits();
+}
+
+function toggleDestiny(iid,pipIdx) {
+  const gs = gameState[iid]; if(!gs) return;
+  if(pipIdx < gs.destiny){gs.destiny=pipIdx;showToast('Destiny spent');}
+  else{gs.destiny=pipIdx+1;showToast('Destiny restored');}
+  renderGameUnits();
+}
+
+// CORRECTED nerve test: D10 + Nv >= 10
+function rollNerve(iid, nv) {
+  const roll = Math.floor(Math.random()*10)+1;
+  gameState[iid].nerveResult = roll;
+  const total = roll + nv;
+  const pass = total >= 10;
+  showToast('Nv test: ' + roll + '+' + nv + '=' + total + ' — ' + (pass?'PASS':'FAIL') + '!');
+  renderGameUnits();
+}
+
+function clearNerve(iid) { gameState[iid].nerveResult = null; renderGameUnits(); }
+
+function rollDice(sides) {
+  const el = document.getElementById('d'+sides+'-result');
+  const btn = document.getElementById('d'+sides+'-btn');
+  el.classList.add('rolling');
+  setTimeout(() => {
+    const roll = sides===10 ? Math.floor(Math.random()*10)+1 : Math.ceil(Math.random()*5);
+    el.textContent = roll;
+    el.classList.remove('rolling');
+    btn.classList.add('rolled');
+    document.getElementById('d'+sides+'-sub').textContent = sides===10?(roll>=8?'High roll!':roll<=2?'Low roll':'ten-sided'):'half D10, round up';
+  },150);
+}
+
+function nextTurn() {
+  turnCount++;
+  document.getElementById('turn-num').textContent = turnCount;
+  Object.keys(gameState).forEach(id => { gameState[id].nerveResult = null; });
+  showToast('Turn ' + turnCount + ' begins');
+  renderGameUnits();
+}
+
+function confirmReset() {
+  showToast('Hold 2 seconds to confirm reset...');
+  const btn = document.querySelector('.game-reset-btn');
+  btn.textContent = '↺ HOLD TO CONFIRM RESET';
+  btn.style.color = 'var(--ember-glow)';
+  btn.style.borderColor = 'var(--ember)';
+  let held = false;
+  const t = setTimeout(() => { held=true; initGame(); btn.textContent='↺ RESET GAME'; btn.style.color=''; btn.style.borderColor=''; showToast('Game reset'); },1500);
+  btn.addEventListener('mouseup',()=>{ if(!held){clearTimeout(t);btn.textContent='↺ RESET GAME';btn.style.color='';btn.style.borderColor='';}},{once:true});
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>
